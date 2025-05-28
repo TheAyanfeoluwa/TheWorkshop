@@ -7,9 +7,12 @@ from dotenv import load_dotenv
 from uuid import uuid4
 from datetime import datetime, timedelta
 
-# SQLModel imports
-from sqlmodel import Session, create_engine, select # New imports for database ops
 
+# SQLModel imports
+from sqlmodel import Field, Session, SQLModel, create_engine, select # <-- CORRECTED LINE: Added SQLModel and Field
+from pydantic import BaseModel # This one was added in the last fix
+
+# ... (rest of your code) ...
 # Password hashing
 from passlib.context import CryptContext
 
@@ -17,7 +20,7 @@ from passlib.context import CryptContext
 from jose import JWTError, jwt
 
 # Import all models from our schemas file
-from .schemas import UserCreate, UserLogin, UserResponse, Token, Message, User # Import User model
+from .schemas import UserCreate, UserLogin, UserResponse, Token, Message, User
 
 # Load environment variables from .env file
 load_dotenv()
