@@ -1,11 +1,52 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { FaEye, FaEyeSlash } from 'react-icons/fa'
-import Navbar from '../components/Navbar'
-import Footer from '../components/Footer'
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
+import axios from 'axios';
 
 const Login = () => {
-  const [showPassword, setShowPassword] = useState(false)
+  const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    console.log('handleSubmit called!'); // <--- ADD THIS LINE HERE
+    e.preventDefault();
+
+    setError('');
+    setSuccess('');
+
+    try {
+      const response = await axios.post('http://127.0.0.1:8001/api/v1/auth/login', {
+        email,
+        password,
+      });
+
+      if (response.data.access_token) {
+        setSuccess('Login successful! Redirecting...');
+        localStorage.setItem('accessToken', response.data.access_token);
+        localStorage.setItem('userEmail', email);
+        navigate('/dashboard');
+      }
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        if (err.response) {
+          setError(err.response.data.detail || 'Login failed. Please check your credentials.');
+        } else if (err.request) {
+          setError('No response from server. Please try again later.');
+        } else {
+          setError('An unexpected error occurred. Please try again.');
+        }
+      } else {
+        setError('An unknown error occurred.');
+      }
+      console.error('Login error:', err);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#121212]">
@@ -15,7 +56,10 @@ const Login = () => {
         <div className="max-w-md mx-auto bg-[#1A1A1A] p-8 rounded-lg">
           <h1 className="text-3xl font-bold mb-6">Welcome Back</h1>
           
-          <form className="space-y-6">
+          {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
+          {success && <p className="text-green-500 mb-4 text-center">{success}</p>}
+
+          <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
               <label htmlFor="email" className="block text-sm font-medium mb-2">
                 Email
@@ -25,6 +69,9 @@ const Login = () => {
                 id="email"
                 className="w-full p-3 bg-[#242424] rounded-md focus:outline-none focus:ring-2 focus:ring-white/20"
                 placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
               />
             </div>
 
@@ -38,6 +85,9 @@ const Login = () => {
                   id="password"
                   className="w-full p-3 bg-[#242424] rounded-md focus:outline-none focus:ring-2 focus:ring-white/20"
                   placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
                 />
                 <button
                   type="button"
@@ -68,7 +118,7 @@ const Login = () => {
 
       <Footer />
     </div>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;
