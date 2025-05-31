@@ -1,73 +1,127 @@
-import { useState, useEffect } from 'react'
-import { FaPlay, FaForward, FaRedo, FaCog } from 'react-icons/fa'
-import { motion } from 'framer-motion'
-import Navbar from '../components/Navbar'
-import Footer from '../components/Footer'
+// frontend/src/pages/Pomodoro.jsx
+import { useState, useEffect, useRef } from 'react'; // ADD useRef for interval management
+import { FaPlay, FaForward, FaRedo, FaCog } from 'react-icons/fa';
+import { motion } from 'framer-motion';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 
 const Pomodoro = () => {
-  const [time, setTime] = useState(30 * 60)
-  const [isRunning, setIsRunning] = useState(false)
-  const [mode, setMode] = useState('pomodoro') 
-  const [showSettings, setShowSettings] = useState(false)
+  const [time, setTime] = useState(30 * 60); // Time in seconds
+  const [isRunning, setIsRunning] = useState(false);
+  const [mode, setMode] = useState('pomodoro'); // 'pomodoro', 'shortBreak', 'longBreak'
+  const [showSettings, setShowSettings] = useState(false);
   const [settings, setSettings] = useState({
-    pomodoro: 30,
+    pomodoro: 25, // Changed default to 25 to match common pomodoro settings
     shortBreak: 5,
     longBreak: 15
-  })
+  });
+
+  // useRef to hold the interval ID, ensuring it persists across renders
+  // and can be cleared effectively
+  const intervalRef = useRef(null);
 
   useEffect(() => {
-    let interval = null
-    if (isRunning && time > 0) {
-      interval = setInterval(() => {
-        setTime(time => time - 1)
-      }, 1000)
-    } else if (time === 0) {
-      setIsRunning(false)
+    // Clear any existing interval to prevent multiple timers running
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
     }
-    return () => clearInterval(interval)
-  }, [isRunning, time])
+
+    if (isRunning && time > 0) {
+      intervalRef.current = setInterval(() => {
+        setTime(prevTime => prevTime - 1);
+      }, 1000);
+    } else if (time === 0) {
+      // Timer has reached 0, so stop it
+      setIsRunning(false);
+      clearInterval(intervalRef.current); // Ensure interval is cleared
+
+      // ---- ADDED LOGIC FOR AUTO-SWITCHING MODES AND ALERTS ----
+      if (mode === 'pomodoro') {
+        alert("Pomodoro session finished! Time for a short break.");
+        handleModeChange('shortBreak', true); // Pass true to auto-start break
+      } else if (mode === 'shortBreak') {
+        alert("Short break finished! Time to focus again.");
+        handleModeChange('pomodoro', true); // Pass true to auto-start work
+      } else if (mode === 'longBreak') {
+        alert("Long break finished! Time to focus again.");
+        handleModeChange('pomodoro', true); // Pass true to auto-start work
+      }
+      // --------------------------------------------------------
+    }
+
+    // Cleanup function: clear interval when component unmounts or dependencies change
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [isRunning, time, mode]); // Added 'mode' to dependencies for auto-switch logic
 
   const formatTime = (seconds) => {
-    const mins = Math.floor(seconds / 60)
-    const secs = seconds % 60
-    return `${mins}:${secs.toString().padStart(2, '0')}`
-  }
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
 
-  const handleModeChange = (newMode) => {
-    setMode(newMode)
-    setIsRunning(false)
+  // Modified handleModeChange to optionally auto-start the next timer
+  const handleModeChange = (newMode, autoStart = false) => {
+    setMode(newMode);
+    setIsRunning(autoStart); // Set running based on autoStart parameter
+    
+    // Clear any existing interval when changing mode
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null; // Ensure it's null after clearing
+    }
+
+    // Set time based on settings for the new mode
     switch (newMode) {
       case 'pomodoro':
-        setTime(settings.pomodoro * 60)
-        break
+        setTime(settings.pomodoro * 60);
+        break;
       case 'shortBreak':
-        setTime(settings.shortBreak * 60)
-        break
+        setTime(settings.shortBreak * 60);
+        break;
       case 'longBreak':
-        setTime(settings.longBreak * 60)
-        break
+        setTime(settings.longBreak * 60);
+        break;
+      default:
+        setTime(settings.pomodoro * 60); // Fallback
     }
-  }
+  };
 
-  const handleStart = () => {
-    setIsRunning(true)
-  }
+  const handleStartPause = () => { // Combined Start/Pause into one handler
+    setIsRunning(prev => !prev);
+  };
 
   const handleSkip = () => {
-    setIsRunning(false)
-    handleModeChange(mode === 'pomodoro' ? 'shortBreak' : 'pomodoro')
-  }
+    // Determine the next mode based on the current mode
+    let nextMode;
+    if (mode === 'pomodoro') {
+      nextMode = 'shortBreak'; // After pomodoro, typically short break
+    } else {
+      nextMode = 'pomodoro'; // After any break, go back to pomodoro
+    }
+    // Call handleModeChange with the next mode, and auto-start it
+    handleModeChange(nextMode, true); 
+  };
 
   const handleReset = () => {
-    setIsRunning(false)
-    handleModeChange(mode)
-  }
+    setIsRunning(false); // Stop the timer
+    handleModeChange(mode); // Reset to the current mode's initial time
+  };
 
   const handleSettingsSave = (newSettings) => {
-    setSettings(newSettings)
-    setShowSettings(false)
-    handleModeChange(mode)
-  }
+    setSettings(newSettings);
+    setShowSettings(false);
+    // After saving, reset the current mode's timer with new settings
+    handleModeChange(mode); 
+  };
+
+  // Determine the primary button text and action
+  const primaryButtonText = isRunning ? 'Pause' : 'Start';
+  const primaryButtonIcon = isRunning ? null : <FaPlay />; // No specific pause icon in original, but could add FaPause
+  const primaryButtonClass = isRunning ? "bg-red-600 hover:bg-red-700" : "bg-white text-black hover:bg-gray-200";
 
   return (
     <div className="min-h-screen bg-[#121212]">
@@ -121,12 +175,12 @@ const Pomodoro = () => {
 
           <div className="flex justify-center gap-4">
             <button
-              className="flex items-center gap-2 px-6 py-3 bg-white text-black rounded-md font-bold hover:bg-gray-200"
-              onClick={handleStart}
-              disabled={isRunning}
+              className={`flex items-center gap-2 px-6 py-3 rounded-md font-bold ${primaryButtonClass}`}
+              onClick={handleStartPause} // Use combined handler
+              // disabled={isRunning} // Removed as button toggles start/pause
             >
-              <FaPlay />
-              <span>Start</span>
+              {primaryButtonIcon}
+              <span>{primaryButtonText}</span>
             </button>
             <button
               className="flex items-center gap-2 px-6 py-3 border border-white/20 rounded-md font-bold hover:bg-white/5"
@@ -216,7 +270,7 @@ const Pomodoro = () => {
 
       <Footer />
     </div>
-  )
-}
+  );
+};
 
-export default Pomodoro
+export default Pomodoro;

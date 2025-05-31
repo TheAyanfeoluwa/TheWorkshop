@@ -1,16 +1,84 @@
-import { Link } from 'react-router-dom'
-import { FaClock, FaListAlt, FaChartBar, FaStore, FaCoins } from 'react-icons/fa'
-import { motion } from 'framer-motion'
-import Navbar from '../components/Navbar'
-import Footer from '../components/Footer'
+// frontend/src/pages/Dashboard.jsx
+import React, { useState, useEffect } from 'react'; // ADD: useState and useEffect
+import { Link, useNavigate } from 'react-router-dom'; // ADD: useNavigate
+import { FaClock, FaListAlt, FaChartBar, FaStore, FaCoins } from 'react-icons/fa';
+import { motion } from 'framer-motion';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 
 const Dashboard = () => {
+  const [userEmail, setUserEmail] = useState(null); // ADD: State for user email
+  const [loading, setLoading] = useState(true);   // ADD: State for loading indicator
+  const [error, setError] = useState(null);       // ADD: State for error messages
+  const navigate = useNavigate(); // ADD: Hook for programmatic navigation
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const token = localStorage.getItem('accessToken'); // Get the stored JWT token
+
+      if (!token) {
+        // Should ideally be caught by PrivateRoute, but good for robustness
+        navigate('/login');
+        return;
+      }
+
+      try {
+        const response = await fetch('http://localhost:8001/api/v1/users/me', { // Use your backend URL
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}` // Include the Bearer token
+          }
+        });
+
+        if (!response.ok) {
+          if (response.status === 401 || response.status === 403) {
+            localStorage.removeItem('accessToken'); // Clear invalid token
+            navigate('/login'); // Redirect to login
+          }
+          const errorData = await response.json();
+          throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setUserEmail(data.email); // Set the fetched email
+      } catch (err) {
+        console.error("Failed to fetch user data:", err);
+        setError(err.message || "Failed to load user data.");
+        localStorage.removeItem('accessToken'); // Clear token on error
+        navigate('/login');
+      } finally {
+        setLoading(false); // End loading regardless of success or failure
+      }
+    };
+
+    fetchUserData();
+  }, [navigate]); // Depend on 'navigate'
+
+  // ADD: Conditional rendering for loading and error states
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#121212] flex items-center justify-center text-white">
+        <p>Loading dashboard data...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-[#121212] flex items-center justify-center text-white">
+        <p className="text-red-500">Error: {error}</p>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex flex-col bg-[#121212] text-white">
       <Navbar />
       <main className="flex-grow container mx-auto px-4 pt-24 pb-16">
         <div className="mb-12">
-          <h1 className="text-3xl font-bold mb-2">Welcome back, User!</h1>
+          {/* REPLACE "User!" with {userEmail} */}
+          <h1 className="text-3xl font-bold mb-2">Welcome back, {userEmail}!</h1> 
           <p className="text-gray-400">Let's make today productive</p>
         </div>
 
@@ -102,9 +170,10 @@ const Dashboard = () => {
       </main>
       <Footer />
     </div>
-  )
-}
+  );
+};
 
+// These sub-components remain unchanged
 const StatCard = ({ title, value }) => {
   return (
     <motion.div 
@@ -118,8 +187,8 @@ const StatCard = ({ title, value }) => {
         <div className="h-full w-0 bg-white rounded-full"></div>
       </div>
     </motion.div>
-  )
-}
+  );
+};
 
 const FeatureCard = ({ to, icon, title, description }) => {
   return (
@@ -134,7 +203,7 @@ const FeatureCard = ({ to, icon, title, description }) => {
         <p className="text-sm text-gray-400">{description}</p>
       </motion.div>
     </Link>
-  )
-}
+  );
+};
 
-export default Dashboard
+export default Dashboard;
