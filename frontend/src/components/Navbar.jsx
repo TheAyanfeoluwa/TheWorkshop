@@ -36,27 +36,31 @@ const Navbar = () => {
     setIsLoggedIn(false); // Update local state
     navigate('/login'); // Redirect to login page
   };
+  const motionProps = {
+    whileHover: { scale: 1.05 },
+    transition: { type: 'spring', stiffness: 400, damping: 10 },
+  };
 
   // The conditional rendering now uses the 'isLoggedIn' state
   return (
-    <nav className="w-full py-2 border-b border-white/10 bg-[#121212] fixed top-0 z-50">
-      <div className="container mx-auto flex justify-between items-center px-4">
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          transition={{ type: "spring", stiffness: 400, damping: 10 }}
-          className="flex-shrink-0"
-        >
-          {/* WorkShop logo link depends on login status */}
+    <div className="w-full fixed top-0 left-0 z-50 bg-[#121212] border-b border-white/10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <nav className="flex items-center justify-between h-16">
+          <motion.div {...motionProps}>
+          {/* changed to display dashboard or workshop depending on login status */}
           <Link to={isLoggedIn ? '/dashboard' : '/'} className="text-3xl font-bold">
-            WorkShop
+            {isLoggedIn ? 'Dashboard' : 'WorkShop'}
           </Link>
         </motion.div>
 
         {isLoggedIn ? ( // Use isLoggedIn here
           <div className="flex items-center gap-2 sm:gap-4">
             <motion.button 
-              whileHover={{ scale: 1.05 }}
-              transition={{ type: "spring", stiffness: 400, damping: 10 }}
+
+            // onClick={() => navigate('/profile')} 
+            // profile page is still under construction and is really buggy
+
+            {...motionProps}
               className="flex items-center gap-2 px-3 sm:px-4 py-2 text-sm sm:text-base text-white border border-white/20 rounded-md hover:bg-white/5"
             >
               <FaUser />
@@ -64,8 +68,7 @@ const Navbar = () => {
             </motion.button>
             <motion.button 
               onClick={handleLogout} // ADD: onClick handler
-              whileHover={{ scale: 1.05 }}
-              transition={{ type: "spring", stiffness: 400, damping: 10 }}
+              {...motionProps}
               className="flex items-center gap-2 px-3 sm:px-4 py-2 text-sm sm:text-base font-semibold border border-white/20 rounded-md hover:bg-white/5"
             >
               <FaSignOutAlt />
@@ -78,10 +81,7 @@ const Navbar = () => {
           </div>
         ) : ( // If not logged in
           <div className="flex items-center gap-2 sm:gap-4">
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              transition={{ type: "spring", stiffness: 400, damping: 10 }}
-            >
+            <motion.div {...motionProps}>
               <Link 
                 to="/login" 
                 className="px-3 sm:px-4 py-2 text-sm sm:text-base font-semibold border border-white/20 rounded-md hover:bg-white/5"
@@ -90,10 +90,7 @@ const Navbar = () => {
               </Link>
             </motion.div>
 
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              transition={{ type: "spring", stiffness: 400, damping: 10 }}
-            >
+            <motion.div {...motionProps}>
               <Link 
                 to="/register" 
                 className="px-3 sm:px-4 py-2 text-sm sm:text-base font-semibold bg-white text-black border border-transparent rounded-md hover:bg-gray-200"
@@ -103,18 +100,16 @@ const Navbar = () => {
             </motion.div>
 
             {/* Keeping Feedback link under unauthenticated for now, consistent with original */}
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              transition={{ type: "spring", stiffness: 400, damping: 10 }}
-            >
+            <motion.div {...motionProps}>
               <Link to="/feedback" className="px-3 sm:px-4 py-2 text-sm sm:text-base font-semibold border border-white/20 rounded-md hover:bg-white/5">
                 Feedback
               </Link>
             </motion.div>
           </div>
         )}
+        </nav>
       </div>
-    </nav>
+    </div>
   )
 }
 
