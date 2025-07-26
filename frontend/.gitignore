@@ -7,15 +7,30 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
+# Node modules and build artifacts (for frontend)
+/frontend/node_modules
+/frontend/dist
+/frontend/dist-ssr
+/frontend/*.local # If .local files are generated in frontend root
+
+# Python virtual environment (for backend)
+/backend/venv/
+/backend/__pycache__/
+/backend/*.pyc
+
+# Database files (for backend)
+/backend/database.db # Crucial: Do not commit your local SQLite DB
+
+# Environment variables
+.env                # Generic .env files
+.env.*.local        # Vite-specific local env files
+/frontend/.env      # Frontend-specific .env file
+/backend/.env       # Backend-specific .env file
 
 # Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
+.vscode/
+!.vscode/extensions.json # Keep extensions.json if you want to share recommended extensions
+.idea/
 .DS_Store
 *.suo
 *.ntvs*
