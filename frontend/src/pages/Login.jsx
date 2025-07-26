@@ -1,9 +1,13 @@
+// frontend/src/pages/Login.jsx - CORRECTED VERSION
+
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import axios from 'axios';
+// Import useAuth hook from your AuthContext
+import { useAuth } from '../context/AuthContext'; // <--- ADD THIS IMPORT
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -13,24 +17,38 @@ const Login = () => {
   const [success, setSuccess] = useState('');
   const navigate = useNavigate();
 
+  // Get the login function from your AuthContext
+  const { login } = useAuth(); // <--- GET THE LOGIN FUNCTION HERE
+
   const handleSubmit = async (e) => {
-    console.log('handleSubmit called!'); // <--- ADD THIS LINE HERE
+    console.log('handleSubmit called!');
     e.preventDefault();
 
     setError('');
     setSuccess('');
 
     try {
-      const response = await axios.post('http://127.0.0.1:8001/api/v1/auth/login', {
+      // Make the API call to your backend
+      const response = await axios.post('http://127.0.0.1:8001/api/v1/auth/login', { // Ensure this endpoint is correct
         email,
         password,
       });
 
       if (response.data.access_token) {
-        setSuccess('Login successful! Redirecting...');
-        localStorage.setItem('accessToken', response.data.access_token);
-        localStorage.setItem('userEmail', email);
-        navigate('/dashboard');
+        // Instead of manually setting localStorage and navigating,
+        // call the login function from AuthContext.
+        // This function will handle setting accessToken in state, localStorage,
+        // displaying the toast, and navigating to /dashboard.
+        await login(response.data.access_token); // <--- CALL AUTHCONTEXT'S LOGIN FUNCTION
+
+        // The success message and navigation are now handled by AuthContext's login function
+        // setSuccess('Login successful! Redirecting...'); // This line is now redundant
+        // localStorage.setItem('accessToken', response.data.access_token); // This is now handled by AuthContext
+        // localStorage.setItem('userEmail', email); // This is now handled by AuthContext (if it manages userEmail)
+        // navigate('/dashboard'); // This is now handled by AuthContext
+      } else {
+          // Handle cases where token is missing from response.data (unlikely with 200 OK)
+          setError('Login response missing access token.');
       }
     } catch (err) {
       if (axios.isAxiosError(err)) {
