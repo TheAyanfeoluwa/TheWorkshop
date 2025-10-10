@@ -16,7 +16,7 @@ import Register from './pages/Register';
 import ComingSoon from './pages/ComingSoon';
 import Feedback from './pages/Feedback';
 // import Progress from './pages/Progress';
-// import Profile from './pages/Profile'; // not implemented yet
+import Profile from './pages/Profile'; // not implemented yet
 import './App.css';
 
 const AppContent = () => {
@@ -65,7 +65,8 @@ const AppContent = () => {
               <Progress />
             </PrivateRoute>
           }
-        />
+        /> */}
+
         <Route
           path="/profile"
           element={
@@ -73,7 +74,7 @@ const AppContent = () => {
               <Profile />
             </PrivateRoute>
           }
-        /> */}
+        />
       </Routes>
 
       <AnimatePresence>
