@@ -5,7 +5,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import '../../src/datepicker-styles.css'; // 
+import '../../src/datepicker-styles.css';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
@@ -329,7 +329,7 @@ const TaskCard = ({ task, onComplete, onDelete }) => {
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-start gap-4 flex-grow">
           <button
-            onClick={() => onComplete(task.id, task.completed)} // Use v2's handler signature
+            onClick={() => onComplete(task.id, task.completed)}
             className={`mt-1 flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${
               task.completed ? 'bg-white border-white' : 'border-gray-400 hover:border-white'
             }`}
