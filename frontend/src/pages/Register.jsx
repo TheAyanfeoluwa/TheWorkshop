@@ -7,7 +7,7 @@ import axios from 'axios';
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -16,10 +16,10 @@ const Register = () => {
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent default form submission behavior
+    e.preventDefault(); 
 
-    setError(''); // Clear previous errors
-    setSuccess(''); // Clear previous success messages
+    setError(''); 
+    setSuccess('');
 
     if (password !== confirmPassword) {
       setError('Passwords do not match!');
@@ -27,38 +27,33 @@ const Register = () => {
     }
 
     try {
-      // Make a POST request to your FastAPI register endpoint
       const response = await axios.post('http://127.0.0.1:8001/api/v1/auth/register', {
         email,
         password,
       });
 
-      // Handle successful registration
-      if (response.status === 201) { // FastAPI returns 201 Created for successful registration
+      if (response.status === 201) { 
+        try {
+          const mapRaw = localStorage.getItem('usernameEmailMap') || '{}';
+          const map = JSON.parse(mapRaw);
+          map[username] = email;
+          localStorage.setItem('usernameEmailMap', JSON.stringify(map));
+        } catch {}
         setSuccess('Registration successful! Redirecting to login...');
-        // Optionally, you could automatically log them in here if you want,
-        // but for a separate login page, redirecting is common.
-        // For now, let's redirect to the login page after successful registration
         setTimeout(() => {
           navigate('/login');
-        }, 1500); // Redirect after 1.5 seconds so user can see success message
+        }, 1500); 
       }
     } catch (err) {
-      // Handle registration errors
       if (axios.isAxiosError(err)) {
         if (err.response) {
-          // The request was made and the server responded with a status code
-          // that falls out of the range of 2xx
           setError(err.response.data.detail || 'Registration failed. Please try again.');
         } else if (err.request) {
-          // The request was made but no response was received
           setError('No response from server. Please try again later.');
         } else {
-          // Something happened in setting up the request that triggered an Error
           setError('An unexpected error occurred. Please try again.');
         }
       } else {
-        // Non-Axios error
         setError('An unknown error occurred.');
       }
       console.error('Registration error:', err);
@@ -73,12 +68,25 @@ const Register = () => {
         <div className="max-w-md mx-auto bg-[#1A1A1A] p-8 rounded-lg">
           <h1 className="text-3xl font-bold mb-6">Create Account</h1>
           
-          {/* Display error message if any */}
           {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
-          {/* Display success message if any */}
           {success && <p className="text-green-500 mb-4 text-center">{success}</p>}
 
           <form className="space-y-6" onSubmit={handleSubmit}>
+            <div>
+              <label htmlFor="username" className="block text-sm font-medium mb-2">
+                Username
+              </label>
+              <input
+                type="text"
+                id="username"
+                className="w-full p-3 bg-[#242424] rounded-md focus:outline-none focus:ring-2 focus:ring-white/20"
+                placeholder="Choose a username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+              />
+            </div>
+
             <div>
               <label htmlFor="email" className="block text-sm font-medium mb-2">
                 Email
@@ -124,7 +132,7 @@ const Register = () => {
               </label>
               <div className="relative">
                 <input
-                  type={showConfirmPassword ? "text" : "password"}
+                  type={showPassword ? "text" : "password"}
                   id="confirmPassword"
                   className="w-full p-3 bg-[#242424] rounded-md focus:outline-none focus:ring-2 focus:ring-white/20"
                   placeholder="Confirm your password"
@@ -132,13 +140,6 @@ const Register = () => {
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
                 />
-                <button
-                  type="button"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
-                >
-                  {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
-                </button>
               </div>
             </div>
 

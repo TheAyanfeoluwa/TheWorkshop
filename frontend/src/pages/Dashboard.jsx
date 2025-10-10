@@ -5,13 +5,14 @@ import { motion } from 'framer-motion';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 // import { getProgressData } from '../services/progressService';
+import { useAuth } from '../context/AuthContext';
 
 const Dashboard = () => {
   const [userEmail, setUserEmail] = useState(null);
-  const [progress, setProgress] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const { username } = useAuth();
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -59,8 +60,7 @@ const Dashboard = () => {
       <main className="flex-grow container mx-auto px-4 pt-24 pb-16">
         <header className="mb-12 flex justify-between items-center">
           <div>
-            <h1 className="text-4xl font-bold">Welcome back, {userEmail}!</h1>
-            {/* will soon add the username field */}
+            <h1 className="text-4xl font-bold">Welcome back, {username || userEmail}!</h1>
             <p className="text-gray-400">Here's a quick look at your workspace.</p>
           </div>
           <div className="flex items-center gap-3 bg-[#1A1A1A] px-4 py-2 rounded-lg">

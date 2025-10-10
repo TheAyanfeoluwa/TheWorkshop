@@ -1,24 +1,20 @@
-// frontend/src/pages/Login.jsx - CORRECTED VERSION
-
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import axios from 'axios';
-// Import useAuth hook from your AuthContext
-import { useAuth } from '../context/AuthContext'; // <--- ADD THIS IMPORT
+import { useAuth } from '../context/AuthContext';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const navigate = useNavigate();
+  
 
-  // Get the login function from your AuthContext
-  const { login } = useAuth(); // <--- GET THE LOGIN FUNCTION HERE
+  const { login } = useAuth();
 
   const handleSubmit = async (e) => {
     console.log('handleSubmit called!');
@@ -28,27 +24,31 @@ const Login = () => {
     setSuccess('');
 
     try {
-      // Make the API call to your backend
-      const response = await axios.post('http://127.0.0.1:8001/api/v1/auth/login', { // Ensure this endpoint is correct
-        email,
+      const mapRaw = localStorage.getItem('usernameEmailMap') || '{}';
+      let mappedEmail;
+      try {
+        const map = JSON.parse(mapRaw);
+        mappedEmail = map[username];
+      } catch {
+        mappedEmail = undefined;
+      }
+
+      const resolvedEmail = mappedEmail || (username.includes('@') ? username : null);
+      if (!resolvedEmail) {
+        setError('No account found for that username. Please register.');
+        return;
+      }
+
+      const response = await axios.post('http://127.0.0.1:8001/api/v1/auth/login', {
+        email: resolvedEmail,
         password,
       });
 
       if (response.data.access_token) {
-        // Instead of manually setting localStorage and navigating,
-        // call the login function from AuthContext.
-        // This function will handle setting accessToken in state, localStorage,
-        // displaying the toast, and navigating to /dashboard.
-        await login(response.data.access_token); // <--- CALL AUTHCONTEXT'S LOGIN FUNCTION
-
-        // The success message and navigation are now handled by AuthContext's login function
-        // setSuccess('Login successful! Redirecting...'); // This line is now redundant
-        // localStorage.setItem('accessToken', response.data.access_token); // This is now handled by AuthContext
-        // localStorage.setItem('userEmail', email); // This is now handled by AuthContext (if it manages userEmail)
-        // navigate('/dashboard'); // This is now handled by AuthContext
+        localStorage.setItem('userEmail', resolvedEmail);
+        await login(response.data.access_token, username);
       } else {
-          // Handle cases where token is missing from response.data (unlikely with 200 OK)
-          setError('Login response missing access token.');
+        setError('Login response missing access token.');
       }
     } catch (err) {
       if (axios.isAxiosError(err)) {
@@ -65,7 +65,6 @@ const Login = () => {
       console.error('Login error:', err);
     }
   };
-
   return (
     <div className="min-h-screen bg-[#121212]">
       <Navbar />
@@ -73,22 +72,22 @@ const Login = () => {
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-md mx-auto bg-[#1A1A1A] p-8 rounded-lg">
           <h1 className="text-3xl font-bold mb-6">Welcome Back</h1>
-          
+
           {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
           {success && <p className="text-green-500 mb-4 text-center">{success}</p>}
 
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
-              <label htmlFor="email" className="block text-sm font-medium mb-2">
-                Email
+              <label htmlFor="username" className="block text-sm font-medium mb-2">
+                Username
               </label>
               <input
-                type="email"
-                id="email"
+                type="text"
+                id="username"
                 className="w-full p-3 bg-[#242424] rounded-md focus:outline-none focus:ring-2 focus:ring-white/20"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 required
               />
             </div>

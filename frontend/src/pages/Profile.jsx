@@ -1,14 +1,17 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { FaUser, FaEnvelope, FaCalendar, FaTrash, FaGoogle } from 'react-icons/fa';
+import { useAuth } from '../context/AuthContext';
 
 const Profile = () => {
-  // placeholder 
+  const { username } = useAuth();
+  const email = useMemo(() => {
+    return localStorage.getItem('userEmail') || 'user@example.com';
+  }, []);
   const user = {
-    username: 'User',
-    email: 'user@example.com',
-    dob: '1990-01-01',
+    username: username || 'User',
+    email,
   };
 
   return (
@@ -19,6 +22,18 @@ const Profile = () => {
           <h1 className="text-5xl font-bold">Profile & Settings</h1>
           <p className="text-gray-400 mt-2">Manage your account details and preferences.</p>
         </header>
+
+        <div className="max-w-2xl mx-auto bg-[#1A1A1A] p-8 rounded-lg shadow-lg mb-8 text-center">
+          <div className="flex flex-col items-center gap-3">
+            <div className="w-20 h-20 rounded-full bg-white/10 flex items-center justify-center">
+              <FaUser className="text-3xl text-white/80" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold">{user.username}</h2>
+              <p className="text-gray-400 text-sm">{user.email}</p>
+            </div>
+          </div>
+        </div>
 
         <div className="max-w-2xl mx-auto bg-[#1A1A1A] p-8 rounded-lg shadow-lg">
           <h2 className="text-2xl font-bold mb-6">Personal Information</h2>
@@ -35,13 +50,6 @@ const Profile = () => {
               <div>
                 <p className="text-sm text-gray-400">Email</p>
                 <p className="text-lg">{user.email}</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-4">
-              <FaCalendar className="text-gray-400 text-xl" />
-              <div>
-                <p className="text-sm text-gray-400">Date of Birth</p>
-                <p className="text-lg">{user.dob}</p>
               </div>
             </div>
           </div>
