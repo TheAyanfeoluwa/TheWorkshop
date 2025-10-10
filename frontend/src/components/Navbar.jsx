@@ -57,9 +57,7 @@ const Navbar = () => {
           <div className="flex items-center gap-2 sm:gap-4">
             <motion.button 
 
-            // onClick={() => navigate('/profile')} 
-            // profile page is still under construction and is really buggy
-
+            onClick={() => navigate('/profile')} 
             {...motionProps}
               className="flex items-center gap-2 px-3 sm:px-4 py-2 text-sm sm:text-base text-white border border-white/20 rounded-md hover:bg-white/5"
             >
