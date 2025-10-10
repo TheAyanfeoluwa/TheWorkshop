@@ -15,7 +15,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import ComingSoon from './pages/ComingSoon';
 import Feedback from './pages/Feedback';
-// import Progress from './pages/Progress';
+import Progress from './pages/Progress';
 import Profile from './pages/Profile'; // not implemented yet
 import './App.css';
 
@@ -58,14 +58,15 @@ const AppContent = () => {
             </PrivateRoute>
           }
         />
-        {/* <Route
+
+        <Route
           path="/progress"
           element={
             <PrivateRoute>
               <Progress />
             </PrivateRoute>
           }
-        /> */}
+        />
 
         <Route
           path="/profile"
