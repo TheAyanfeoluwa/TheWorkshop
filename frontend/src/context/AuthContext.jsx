@@ -1,12 +1,9 @@
-// frontend/src/context/AuthContext.jsx
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify'; // For displaying toast notifications
+import { toast } from 'react-toastify';
 
-// Create the AuthContext
 const AuthContext = createContext(null);
 
-// Custom hook to use the AuthContext easily in components
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
@@ -15,53 +12,57 @@ export const useAuth = () => {
   return context;
 };
 
-// AuthProvider component that will wrap your application
 export const AuthProvider = ({ children }) => {
-  // Initialize accessToken from localStorage on component mount
   const [accessToken, setAccessToken] = useState(() => {
     return localStorage.getItem('accessToken') || null;
   });
-  const navigate = useNavigate(); // Hook for navigation
-// frontend/src/context/AuthContext.jsx
 
-// ... (other imports and code) ...
+  const [username, setUsername] = useState(() => {
+    return localStorage.getItem('username') || null;
+  });
 
-const login = useCallback((token) => {
-  setAccessToken(token);
-  localStorage.setItem('accessToken', token);
-  toast.success("Login successful!");
-  navigate('/dashboard'); // <-- CHANGED TO /dashboard
-}, [navigate]);
+  const navigate = useNavigate();
 
-// ... (rest of your code) ...
-  // Function to handle user logout
-  const logout = useCallback(() => {
-    setAccessToken(null); // Clear state
-    localStorage.removeItem('accessToken'); // Remove from local storage
-    toast.info("You have been logged out."); // Show info message
-    navigate('/login'); // Redirect to the login page after logout
+  const login = useCallback((token, providedUsername) => {
+    setAccessToken(token);
+    localStorage.setItem('accessToken', token);
+    if (providedUsername) {
+      setUsername(providedUsername);
+      localStorage.setItem('username', providedUsername);
+    }
+    toast.success("Login successful!");
+    navigate('/dashboard');
   }, [navigate]);
 
-  // Optional: useEffect to re-sync accessToken with localStorage if external changes occur
-  // Though useState's initializer usually handles the first load, this can catch
-  // direct localStorage manipulation or other edge cases.
+  const logout = useCallback(() => {
+    setAccessToken(null);
+    localStorage.removeItem('accessToken');
+    setUsername(null);
+    localStorage.removeItem('username');
+    toast.info("You have been logged out.");
+    navigate('/login');
+  }, [navigate]);
+
   useEffect(() => {
     const storedToken = localStorage.getItem('accessToken');
     if (storedToken && storedToken !== accessToken) {
       setAccessToken(storedToken);
     } else if (!storedToken && accessToken) {
-      // If token was in state but not in storage (e.g. cleared manually)
       setAccessToken(null);
     }
-  }, [accessToken]);
+    const storedUsername = localStorage.getItem('username');
+    if (storedUsername && storedUsername !== username) {
+      setUsername(storedUsername);
+    } else if (!storedUsername && username) {
+      setUsername(null);
+    }
+  }, [accessToken, username]);
 
-
-  // The value that will be supplied to any components that use useAuth()
   const authContextValue = {
     accessToken,
+    username,
     login,
     logout,
-    // You might add user information (e.g., user email) here later if fetched after login
   };
 
   return (
