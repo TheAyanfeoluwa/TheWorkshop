@@ -29,9 +29,10 @@ export const PomodoroProvider = ({ children }) => {
   const handleCompletion = useCallback((isSkip = false) => {
     if (!isSkip) {
       if (mode === 'pomodoro') {
-        logPomodoro(settings.pomodoro, settings.coinsPerPomodoro);
+        // Pass the current pomodoroCount for logging/tracking purposes
+        logPomodoro(settings.pomodoro, settings.coinsPerPomodoro, pomodoroCount);
         toast.success(`🎉 Well done! You've earned ${settings.coinsPerPomodoro} coins!`);
-      } else if (mode === 'shortBreak') {
+      } else if (mode === 'shortBreak') {      } else if (mode === 'shortBreak') {
         logBreak(settings.shortBreak);
         toast.info('Break finished. Time for the next session!');
       } else if (mode === 'longBreak') {

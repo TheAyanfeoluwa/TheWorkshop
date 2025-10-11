@@ -1,3 +1,12 @@
+// --- Global State for API Logging Guard ---
+let lastLoggedPomodoroCount = 0; 
+const API_BASE_URL = 'http://localhost:8001'; 
+
+// Helper function to retrieve the authentication token
+const getAuthToken = () => {
+  // Use the globally provided token for authentication
+  return typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+};
 const getToday = () => {
   return new Date().toISOString().split('T')[0];
 };
@@ -30,7 +39,57 @@ export const saveProgressData = (data) => {
   localStorage.setItem('progressData', JSON.stringify(data));
 };
 
-export const logPomodoro = (minutes, coinsEarned = 10) => {
+export const logPomodoro = async (minutes, coinsEarned = 10, currentCount) => {
+  // 1. API Logging Check: Only proceed if this is a new, unlogged count
+  if (currentCount > lastLoggedPomodoroCount) {
+    const authToken = getAuthToken();
+    if (authToken) {
+      const maxRetries = 3;
+      let delay = 1000; 
+      
+      for (let attempt = 0; attempt < maxRetries; attempt++) {
+        try {
+          const response = await fetch(`${API_BASE_URL}/api/v1/sessions/complete`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authToken}` },
+            body: JSON.stringify({
+              mode: 'pomodoro', 
+              duration: minutes * 60, // Duration in seconds
+              coinsEarned: coinsEarned,
+              completedAt: new Date().toISOString(),
+            }),
+          });
+    
+          if (response.ok) {
+            lastLoggedPomodoroCount = currentCount; // SUCCESS: Update the tracker
+            console.log(`Pomodoro #${currentCount} successfully logged to backend.`);
+            break; // Exit retry loop on success
+          } else {
+            // Retry on server errors (5xx)
+            if (response.status >= 500 && attempt < maxRetries - 1) {
+              await new Promise(resolve => setTimeout(resolve, delay));
+              delay *= 2; 
+            } else {
+              const errorData = await response.json().catch(() => ({ message: response.statusText }));
+              console.error('Failed to log session to backend:', errorData);
+              break; 
+            }
+          }
+        } catch (error) {
+          if (attempt < maxRetries - 1) {
+            await new Promise(resolve => setTimeout(resolve, delay));
+            delay *= 2; 
+          } else {
+            console.error('Final attempt failed to log session:', error);
+          }
+        }
+      }
+    } else {
+      console.warn("User not authenticated. Skipping backend logging.");
+    }
+  }
+
+  // 2. Local Storage Logging (Always keep this for immediate frontend progress/coins)
   const data = getProgressData();
   const today = getToday();
 
@@ -40,9 +99,12 @@ export const logPomodoro = (minutes, coinsEarned = 10) => {
     data.history[today].breakTime = 0;
   }
 
-  data.history[today].pomodoros += 1;
-  data.history[today].focusTime += minutes;
-  data.coins += coinsEarned;
+  // Only increment if we haven't logged this count yet (local tracker)
+  if (currentCount > lastLoggedPomodoroCount || !currentCount) {
+    data.history[today].pomodoros += 1;
+    data.history[today].focusTime += minutes;
+    data.coins += coinsEarned;
+  }
 
   saveProgressData(data);
   return data;
@@ -109,6 +171,41 @@ export const createReward = (reward) => {
   data.rewards.push(reward);
   saveProgressData(data);
   return data;
+};
+
+/**
+ * Fetches all completed sessions for the authenticated user from the backend.
+ * This data will be used to calculate daily progress.
+ */
+export const fetchCompletedSessions = async () => {
+  const authToken = getAuthToken(); // Assuming getAuthToken is defined at the top of this file
+  if (!authToken) {
+    console.error("Authentication token is missing. Cannot fetch sessions.");
+    return [];
+  }
+
+  try {
+    // NOTE: Using your configured backend port 8001
+    const response = await fetch(`${API_BASE_URL}/api/v1/sessions/all`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authToken}`, 
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data.sessions || []; // Assuming backend returns an array of sessions
+    } else {
+      console.error(`Failed to fetch sessions: ${response.statusText}`);
+      // Fallback for failed fetch, perhaps returning local data?
+      return []; 
+    }
+  } catch (error) {
+    console.error('Network error during session fetch:', error);
+    return [];
+  }
 };
 
 export const redeemReward = (reward) => {

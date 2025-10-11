@@ -20,7 +20,9 @@ from sqlmodel import Field, Session, SQLModel, create_engine, select # Added Rel
 # --- IMPORTANT: Ensure you have a 'schemas.py' file in the same directory (app/)
 from .schemas import (
     UserCreate, UserLogin, UserResponse, Token, Message, User,
-    Task, TaskCreate, TaskUpdate, TaskResponse # Import new Task schemas
+    Task, TaskCreate, TaskUpdate, TaskResponse, # Existing Task imports
+    # NEW: Pomodoro Session Log Models
+    SessionLog, SessionLogCreate, SessionLogResponse 
 )
 
 
@@ -199,11 +201,46 @@ async def read_users_me(current_user: User = Depends(get_current_user)):
     """
     return current_user # current_user is already a User model instance from the database
 
-# --- Task Management Endpoints (Now using Database) ---
+# --- Pomodoro Session Logging Endpoint (NEW) ---
+@app.post(
+    "/api/v1/log/session", 
+    response_model=SessionLogResponse, 
+    status_code=status.HTTP_201_CREATED, 
+    summary="Log a completed Pomodoro session for progress tracking"
+)
+async def log_pomodoro_session(
+    log_data: SessionLogCreate, 
+    current_user: User = Depends(get_current_user), # Requires authentication
+    session: Session = Depends(get_session)
+):
+    """
+    Accepts time spent (in minutes) and session type ('focus', 'short_break', 'long_break') 
+    and saves the session log to the database linked to the current user.
+    """
+    if log_data.minutes_spent <= 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Minutes spent must be greater than zero."
+        )
+        
+    # Create the database record
+    db_log = SessionLog(
+        id=str(uuid4()),
+        minutes_spent=log_data.minutes_spent,
+        session_type=log_data.session_type,
+        user_id=current_user.id, # Link to the current authenticated user's ID
+        completion_time=datetime.now(timezone.utc)
+    )
 
-# Remove fake_tasks_db and next_task_id
-# fake_tasks_db: Dict[str, List[Dict]] = {}
-# next_task_id: int = 1
+    session.add(db_log)
+    session.commit()
+    session.refresh(db_log)
+    
+    # Return the created log data
+    return db_log
+
+
+# --- Task Management Endpoints (Now using Database) ---
 
 @app.post("/api/v1/tasks/", response_model=TaskResponse, status_code=status.HTTP_201_CREATED, summary="Create a new task")
 async def create_task(

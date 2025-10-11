@@ -1,12 +1,6 @@
-// frontend/src/components/Navbar.jsx
-import React, { useState, useEffect } from 'react'; // ADD: useState and useEffect
-import { Link, useNavigate } from 'react-router-dom'; // MODIFY: Import useNavigate instead of useLocation
-import { FaSignOutAlt, FaUser } from 'react-icons/fa';
-import { motion } from 'framer-motion';
-
-const Navbar = () => {
-  // const location = useLocation(); // REMOVE: No longer needed for auth check
-  const navigate = useNavigate(); // ADD: For programmatic navigation after logout
+const Navbar = ({ currentView, setCurrentView }) => {
+  // const location = useLocation(); 
+  const navigate = useNavigate(); 
 
   // ADD: State to track authentication status
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -46,12 +40,42 @@ const Navbar = () => {
     <div className="w-full fixed top-0 left-0 z-50 bg-[#121212] border-b border-white/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <nav className="flex items-center justify-between h-16">
-          <motion.div {...motionProps}>
-          {/* changed to display dashboard or workshop depending on login status */}
-          <Link to={isLoggedIn ? '/dashboard' : '/'} className="text-3xl font-bold">
-            {isLoggedIn ? 'Dashboard' : 'WorkShop'}
-          </Link>
-        </motion.div>
+
+          {/* --- START OF REPLACEMENT FOR MAIN TITLE/NAV LINK --- */}
+          {isLoggedIn ? (
+            <div className="flex items-center gap-6">
+              <h1 className="text-3xl font-bold text-white">Dashboard</h1> 
+              
+              {/* Timer Button */}
+              <motion.button 
+                onClick={() => setCurrentView('timer')}
+                className={`px-3 py-1 rounded-md text-base font-semibold transition-colors ${
+                  currentView === 'timer' ? 'bg-white text-black' : 'text-gray-300 hover:text-white'
+                }`}
+                {...motionProps}
+              >
+                Timer
+              </motion.button>
+
+              {/* Progress Button */}
+              <motion.button 
+                onClick={() => setCurrentView('progress')}
+                className={`px-3 py-1 rounded-md text-base font-semibold transition-colors ${
+                  currentView === 'progress' ? 'bg-white text-black' : 'text-gray-300 hover:text-white'
+                }`}
+                {...motionProps}
+              >
+                Progress
+              </motion.button>
+            </div>
+          ) : ( 
+            <motion.div {...motionProps}>
+              <Link to={'/'} className="text-3xl font-bold">
+                WorkShop
+              </Link>
+            </motion.div>
+          )}
+          {/* --- END OF REPLACEMENT --- */}
 
         {isLoggedIn ? ( // Use isLoggedIn here
           <div className="flex items-center gap-2 sm:gap-4">
@@ -111,4 +135,4 @@ const Navbar = () => {
   )
 }
 
-export default Navbar
+export default Navbar;
