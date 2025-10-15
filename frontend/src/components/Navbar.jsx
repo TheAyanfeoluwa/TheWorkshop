@@ -1,5 +1,11 @@
-const Navbar = ({ currentView, setCurrentView }) => {
-  // const location = useLocation(); 
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { FaUser, FaSignOutAlt } from 'react-icons/fa';
+const Navbar = ({ 
+    currentView = 'timer', // Default view to 'timer' for safety
+    setCurrentView = () => {}, // Default to a no-op function if not passed
+}) => {
   const navigate = useNavigate(); 
 
   // ADD: State to track authentication status
@@ -8,6 +14,7 @@ const Navbar = ({ currentView, setCurrentView }) => {
   // ADD: Effect to check login status on mount and listen for localStorage changes
   useEffect(() => {
     const checkLoginStatus = () => {
+      // NOTE: Using a mock access token check for demonstration
       const token = localStorage.getItem('accessToken');
       setIsLoggedIn(!!token); // Set true if token exists, false otherwise
     };
@@ -30,43 +37,22 @@ const Navbar = ({ currentView, setCurrentView }) => {
     setIsLoggedIn(false); // Update local state
     navigate('/login'); // Redirect to login page
   };
+  
   const motionProps = {
     whileHover: { scale: 1.05 },
     transition: { type: 'spring', stiffness: 400, damping: 10 },
   };
 
-  // The conditional rendering now uses the 'isLoggedIn' state
   return (
     <div className="w-full fixed top-0 left-0 z-50 bg-[#121212] border-b border-white/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <nav className="flex items-center justify-between h-16">
 
-          {/* --- START OF REPLACEMENT FOR MAIN TITLE/NAV LINK --- */}
+          {/* --- START OF MAIN TITLE/NAV LINK --- */}
           {isLoggedIn ? (
             <div className="flex items-center gap-6">
-              <h1 className="text-3xl font-bold text-white">Dashboard</h1> 
-              
-              {/* Timer Button */}
-              <motion.button 
-                onClick={() => setCurrentView('timer')}
-                className={`px-3 py-1 rounded-md text-base font-semibold transition-colors ${
-                  currentView === 'timer' ? 'bg-white text-black' : 'text-gray-300 hover:text-white'
-                }`}
-                {...motionProps}
-              >
-                Timer
-              </motion.button>
-
-              {/* Progress Button */}
-              <motion.button 
-                onClick={() => setCurrentView('progress')}
-                className={`px-3 py-1 rounded-md text-base font-semibold transition-colors ${
-                  currentView === 'progress' ? 'bg-white text-black' : 'text-gray-300 hover:text-white'
-                }`}
-                {...motionProps}
-              >
-                Progress
-              </motion.button>
+              {/* If logged in, the link goes to the main dashboard page */}
+              <Link to="/dashboard" className="text-3xl font-bold text-white">Dashboard</Link> 
             </div>
           ) : ( 
             <motion.div {...motionProps}>
@@ -75,14 +61,13 @@ const Navbar = ({ currentView, setCurrentView }) => {
               </Link>
             </motion.div>
           )}
-          {/* --- END OF REPLACEMENT --- */}
+          {/* --- END OF MAIN TITLE/NAV LINK --- */}
 
         {isLoggedIn ? ( // Use isLoggedIn here
           <div className="flex items-center gap-2 sm:gap-4">
             <motion.button 
-
-            onClick={() => navigate('/profile')} 
-            {...motionProps}
+              onClick={() => navigate('/profile')} 
+              {...motionProps}
               className="flex items-center gap-2 px-3 sm:px-4 py-2 text-sm sm:text-base text-white border border-white/20 rounded-md hover:bg-white/5"
             >
               <FaUser />

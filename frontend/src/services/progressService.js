@@ -1,5 +1,6 @@
 // --- Global State for API Logging Guard ---
 let lastLoggedPomodoroCount = 0; 
+// Using your configured backend port 8001
 const API_BASE_URL = 'http://localhost:8001'; 
 
 // Helper function to retrieve the authentication token
@@ -14,8 +15,15 @@ const getToday = () => {
 const getInitialData = () => ({
   coins: 100,
   history: {},
-  rewards: [],
+  rewards: [], // Typically for purchasable/redeemable items
   tasks: [],
+  // NEW: Structure for tracking overall user progress and passive rewards
+  userStats: {
+    totalCompletedPomodoros: 0, // Used for calculating hours and unlocking time-based rewards
+    unlockedRewards: [],      // IDs of passive rewards (titles/frames) unlocked by time
+    activeTitleId: null,      // ID of the currently equipped title/flair
+    activeFrameId: null,      // ID of the currently equipped profile frame
+  }
 });
 
 export const getProgressData = () => {
@@ -26,7 +34,24 @@ export const getProgressData = () => {
       saveProgressData(initialData);
       return initialData;
     }
-    return JSON.parse(data);
+    const parsedData = JSON.parse(data);
+
+    // --- Migration/Safety Logic: Ensure the new userStats keys exist ---
+    const defaultStats = getInitialData().userStats;
+    if (!parsedData.userStats) {
+        // If userStats is completely missing, use defaults
+        parsedData.userStats = defaultStats;
+    } else {
+        // Merge in any missing keys (e.g., if we added activeFrameId later)
+        parsedData.userStats = {
+            ...defaultStats,
+            ...parsedData.userStats,
+        };
+    }
+    // --- End Migration Logic ---
+    
+    return parsedData;
+
   } catch (error) {
     console.error("Failed to parse progress data:", error);
     const initialData = getInitialData();
@@ -104,6 +129,8 @@ export const logPomodoro = async (minutes, coinsEarned = 10, currentCount) => {
     data.history[today].pomodoros += 1;
     data.history[today].focusTime += minutes;
     data.coins += coinsEarned;
+    // NEW: Update total completed pomodoros for reward tracking
+    data.userStats.totalCompletedPomodoros += 1; 
   }
 
   saveProgressData(data);
@@ -124,6 +151,19 @@ export const logBreak = (minutes) => {
 
   saveProgressData(data);
   return data;
+};
+
+// NEW FUNCTION: To set the currently active reward (Title or Frame)
+// This will be called from your RewardsPage
+export const setActiveReward = (type, rewardId) => {
+    const data = getProgressData();
+    if (type === 'title') {
+        data.userStats.activeTitleId = rewardId;
+    } else if (type === 'frame') {
+        data.userStats.activeFrameId = rewardId;
+    }
+    saveProgressData(data);
+    return data.userStats;
 };
 
 export const logTaskCompletion = (task) => {
