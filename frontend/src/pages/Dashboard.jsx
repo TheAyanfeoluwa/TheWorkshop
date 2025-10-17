@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaClock, FaListAlt, FaChartBar, FaStore, FaCoins, FaTasks, FaBrain } from 'react-icons/fa';
+import { FaClock, FaListAlt, FaChartBar, FaStore, FaCoins, FaTasks, FaBrain, FaUserCircle} from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';

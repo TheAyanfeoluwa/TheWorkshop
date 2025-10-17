@@ -30,7 +30,7 @@ const AppContent = () => {
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/store" element={<Store />} />
+        <Route path="/rewards" element={<Store />} />
         <Route path="/coming-soon" element={<ComingSoon />} />
         <Route path="/feedback" element={<Feedback />} />
 
