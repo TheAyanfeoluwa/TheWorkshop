@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useAuth } from '../context/AuthContext'; // Assuming you have an AuthContext
-
+import { API_BASE_URL } from '../services/progressService';
 const PrivateRoute = ({ children }) => {
   const { accessToken, logout } = useAuth(); // Get accessToken and logout function from AuthContext
 
@@ -20,7 +20,7 @@ const PrivateRoute = ({ children }) => {
 
       try {
         // Attempt to fetch user data with the token
-        const response = await fetch('API_BASE_URL/api/v1/users/me', {
+        const response = await fetch('${API_BASE_URL}/api/v1/users/me', {
           headers: {
             'Authorization': `Bearer ${accessToken}`,
             'Content-Type': 'application/json',

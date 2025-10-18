@@ -4,6 +4,7 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import axios from 'axios';
+import { API_BASE_URL } from '../services/progressService';
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -27,7 +28,7 @@ const Register = () => {
     }
 
     try {
-      const response = await axios.post('API_BASE_URL/api/v1/auth/register', {
+      const response = await axios.post('${API_BASE_URL}/api/v1/auth/register', {
         email,
         password,
       });

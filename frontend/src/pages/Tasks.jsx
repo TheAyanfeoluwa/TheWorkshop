@@ -8,6 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import '../../src/datepicker-styles.css';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import { API_BASE_URL } from '../services/progressService';
 
 const priorityConfig = {
   low: { color: 'text-blue-500', label: 'Low' },
@@ -39,7 +40,7 @@ const Tasks = () => {
     }
 
     try {
-      const response = await fetch('API_BASE_URL/api/v1/tasks/', {
+      const response = await fetch('${API_BASE_URL}/api/v1/tasks/', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (!response.ok) {
@@ -74,7 +75,7 @@ const Tasks = () => {
     };
 
     try {
-      const response = await fetch('API_BASE_URL/api/v1/tasks/', {
+      const response = await fetch('${API_BASE_URL}/api/v1/tasks/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -110,7 +111,7 @@ const Tasks = () => {
   const handleTaskComplete = async (taskId, currentCompletedStatus) => {
     const token = localStorage.getItem('accessToken');
     try {
-      const response = await fetch(`API_BASE_URL/api/v1/tasks/${taskId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/v1/tasks/${taskId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -141,7 +142,7 @@ const Tasks = () => {
 
     const token = localStorage.getItem('accessToken');
     try {
-      const response = await fetch(`API_BASE_URL/api/v1/tasks/${taskId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/v1/tasks/${taskId}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });
