@@ -39,7 +39,7 @@ const Tasks = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:8001/api/v1/tasks/', {
+      const response = await fetch('API_BASE_URL/api/v1/tasks/', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (!response.ok) {
@@ -74,7 +74,7 @@ const Tasks = () => {
     };
 
     try {
-      const response = await fetch('http://localhost:8001/api/v1/tasks/', {
+      const response = await fetch('API_BASE_URL/api/v1/tasks/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -110,7 +110,7 @@ const Tasks = () => {
   const handleTaskComplete = async (taskId, currentCompletedStatus) => {
     const token = localStorage.getItem('accessToken');
     try {
-      const response = await fetch(`http://localhost:8001/api/v1/tasks/${taskId}`, {
+      const response = await fetch(`API_BASE_URL/api/v1/tasks/${taskId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -141,7 +141,7 @@ const Tasks = () => {
 
     const token = localStorage.getItem('accessToken');
     try {
-      const response = await fetch(`http://localhost:8001/api/v1/tasks/${taskId}`, {
+      const response = await fetch(`API_BASE_URL/api/v1/tasks/${taskId}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });

@@ -20,7 +20,7 @@ const PrivateRoute = ({ children }) => {
 
       try {
         // Attempt to fetch user data with the token
-        const response = await fetch('http://localhost:8001/api/v1/users/me', {
+        const response = await fetch('API_BASE_URL/api/v1/users/me', {
           headers: {
             'Authorization': `Bearer ${accessToken}`,
             'Content-Type': 'application/json',

@@ -130,7 +130,7 @@ const Dashboard = () => {
                 return;
             }
             try {
-                const response = await fetch('http://localhost:8001/api/v1/users/me', {
+                const response = await fetch('API_BASE_URL/api/v1/users/me', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
