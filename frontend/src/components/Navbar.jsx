@@ -81,6 +81,11 @@ const Navbar = ({
               <FaSignOutAlt />
               <span className="hidden sm:inline">Sign Out</span>
             </motion.button>
+            <motion.div {...motionProps}>
+                <Link to="/materials" className="px-3 sm:px-4 py-2 text-sm sm:text-base font-semibold border border-white/20 rounded-md hover:bg-white/5">
+                  Materials
+                </Link>
+              </motion.div>
             {/* Keeping Feedback link under authenticated for now, consistent with original */}
             <Link to="/feedback" className="px-3 sm:px-4 py-2 text-sm sm:text-base font-semibold border border-white/20 rounded-md hover:bg-white/5">
               Feedback

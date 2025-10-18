@@ -16,7 +16,8 @@ import Register from './pages/Register';
 import ComingSoon from './pages/ComingSoon';
 import Feedback from './pages/Feedback';
 import Progress from './pages/Progress';
-import Profile from './pages/Profile'; // not implemented yet
+import Profile from './pages/Profile'; //
+import Materials from './pages/Materials';
 import './App.css';
 
 const AppContent = () => {
@@ -73,6 +74,15 @@ const AppContent = () => {
           element={
             <PrivateRoute>
               <Profile />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/materials"
+          element={
+            <PrivateRoute>
+              <Materials />
             </PrivateRoute>
           }
         />
