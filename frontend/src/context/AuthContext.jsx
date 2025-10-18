@@ -21,12 +21,12 @@ export const AuthProvider = ({ children }) => {
     return localStorage.getItem('username') || null;
   });
 
-  // State flag to control the *immediate* post-login redirect.
-  const [shouldRedirect, setShouldRedirect] = useState(false); 
+  // NEW STATE: Tracks only if a login just completed successfully
+  const [didLogin, setDidLogin] = useState(false); 
 
   const navigate = useNavigate();
 
-  // 1. UPDATED: The login function only updates state and sets the redirect flag.
+  // 1. LOGIN: Only updates state and sets the flag
   const login = useCallback((token, providedUsername) => {
     // 1a. Store data synchronously
     localStorage.setItem('accessToken', token);
@@ -37,36 +37,38 @@ export const AuthProvider = ({ children }) => {
       setUsername(providedUsername);
     }
     
-    toast.success("Login successful!");
-    
-    // 1b. Set flag to trigger navigation outside the function scope
-    setShouldRedirect(true); 
+    // 1b. Set flag to trigger the independent redirect effect
+    setDidLogin(true); 
 
-  }, []); // Removed 'navigate' from dependencies as we're not using it directly here now
+    toast.success("Login successful!");
+  }, []); 
 
   const logout = useCallback(() => {
     setAccessToken(null);
     localStorage.removeItem('accessToken');
     setUsername(null);
     localStorage.removeItem('username');
+    
+    // Ensure didLogin is always false on logout
+    setDidLogin(false); 
+    
     toast.info("You have been logged out.");
     navigate('/login');
   }, [navigate]);
 
-  // 2. NEW: useEffect to handle the redirect based on the flag
+  // 2. REDIRECT EFFECT: Runs only when didLogin is set to true
   useEffect(() => {
-    if (shouldRedirect) {
-        // Reset the flag immediately to prevent infinite loops
-        setShouldRedirect(false); 
-        // Execute the navigation command
-        navigate('/dashboard'); 
+    if (didLogin) {
+      // Clear the flag immediately
+      setDidLogin(false); 
+      // Execute the navigation command after state has settled
+      navigate('/dashboard'); 
     }
-  }, [shouldRedirect, navigate]); 
+  }, [didLogin, navigate]); 
   
-  // 3. CLEANUP/Simplification of the old useEffect
+  // 3. INITIALIZATION EFFECT: Runs only on component mount
   useEffect(() => {
     const storedToken = localStorage.getItem('accessToken');
-    // Simplified logic: If the stored token exists AND we aren't currently holding it, set it.
     if (storedToken && storedToken !== accessToken) {
       setAccessToken(storedToken);
     }
@@ -75,9 +77,7 @@ export const AuthProvider = ({ children }) => {
     if (storedUsername && storedUsername !== username) {
       setUsername(storedUsername);
     }
-    
-    // We don't need to clear state here; the logout function handles that.
-  }, []); // IMPORTANT: No dependencies here. This should only run on mount for initialization.
+  }, []); 
 
 
   const authContextValue = {
@@ -85,7 +85,6 @@ export const AuthProvider = ({ children }) => {
     username,
     login,
     logout,
-    // Add a check for authenticated state if you don't have one already
     isAuthenticated: !!accessToken,
   };
 
