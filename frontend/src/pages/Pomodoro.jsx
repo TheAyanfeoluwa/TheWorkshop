@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import { ALL_PASSIVE_REWARDS } from '../constants/rewardConstants'; 
+
 // --- ProgressView Component Definition (Updated) ---
 const ProgressView = ({ totalCompletedPomodoros }) => {
   // Utility function to determine progress label
