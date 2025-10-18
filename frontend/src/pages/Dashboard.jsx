@@ -9,15 +9,7 @@ import { useAuth } from '../context/AuthContext';
 import { usePomodoro } from '../context/PomodoroContext';
 import { REWARDS } from '../constants/rewardConstants'; 
 
-// NOTE: This code assumes the following items are correctly imported and available in scope:
-// React hooks: useState, useEffect
-// React Router: Link, useNavigate
-// Icons: FaClock, FaListAlt, FaChartBar, FaTasks, FaBrain, FaUserCircle (and others if needed)
-// Libraries: motion (from framer-motion)
-// Components/Constants/Hooks: Navbar, Footer, useAuth, usePomodoro, REWARDS
 
-
-// --- Helper Components (Assuming motion is globally available) ---
 const StatCard = ({ icon, title, value }) => (
     <motion.div className="bg-[#1A1A1A] p-6 rounded-lg" whileHover={{ scale: 1.01, backgroundColor: '#242424' }} transition={{ duration: 0.2 }}>
         <div className="flex items-center gap-4">

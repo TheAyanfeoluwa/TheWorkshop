@@ -1,12 +1,10 @@
-# backend/app/main.py
-
 from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Optional, Dict
 import os
 from dotenv import load_dotenv
 from uuid import uuid4
-from datetime import datetime, timedelta, timezone # Import timezone for UTC
+from datetime import datetime, timedelta, timezone 
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from pydantic import ValidationError, BaseModel, EmailStr
@@ -15,7 +13,7 @@ from pydantic import ValidationError, BaseModel, EmailStr
 from passlib.context import CryptContext
 
 # SQLModel imports
-from sqlmodel import Field, Session, SQLModel, create_engine, select # Added Relationship if needed for Task.owner
+from sqlmodel import Field, Session, SQLModel, create_engine, select
 
 # --- IMPORTANT: Ensure you have a 'schemas.py' file in the same directory (app/)
 from .schemas import (
@@ -36,7 +34,9 @@ class Settings(BaseModel):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     # Prioritize DATABASE_URL from environment for production, fallback to SQLite for local dev
     DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///./database.db") # Default to SQLite for local
-    FRONTEND_URL: str = os.getenv("FRONTEND_URL", "http://localhost:5173") # Frontend URL for CORS
+    
+    # FIX: Use FRONTEND_URLS to support local dev and live Render URL (comma-separated)
+    FRONTEND_URLS: str = os.getenv("FRONTEND_URLS", "http://localhost:5173,http://localhost:3000") 
 
 settings = Settings()
 
@@ -114,9 +114,12 @@ app = FastAPI(
 )
 
 # --- CORS Configuration ---
+# Convert the comma-separated string of FRONTEND_URLS into a list of strings
+allowed_origins = [url.strip() for url in settings.FRONTEND_URLS.split(',')]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[settings.FRONTEND_URL], # Allow your frontend origin from settings
+    allow_origins=allowed_origins, # Allow your frontend origin(s) from settings
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
