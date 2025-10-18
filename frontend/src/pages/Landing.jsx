@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { FaRegClock, FaRegListAlt, FaChartLine, FaStore } from 'react-icons/fa'
 import { motion } from 'framer-motion'
 import Navbar from '../components/Navbar'

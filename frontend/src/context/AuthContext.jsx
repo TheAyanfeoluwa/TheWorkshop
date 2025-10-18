@@ -13,15 +13,11 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }) => {
-  const [accessToken, setAccessToken] = useState(() => {
-    return localStorage.getItem('accessToken') || null;
-  });
+  // Initialize state from localStorage
+  const [accessToken, setAccessToken] = useState(() => localStorage.getItem('accessToken') || null);
+  const [username, setUsername] = useState(() => localStorage.getItem('username') || null);
 
-  const [username, setUsername] = useState(() => {
-    return localStorage.getItem('username') || null;
-  });
-
-  // NEW STATE: Tracks only if a login just completed successfully
+  // State flag to track a successful, yet unhandled, login
   const [didLogin, setDidLogin] = useState(false); 
 
   const navigate = useNavigate();
@@ -40,7 +36,7 @@ export const AuthProvider = ({ children }) => {
     // 1b. Set flag to trigger the independent redirect effect
     setDidLogin(true); 
 
-    toast.success("Login successful!");
+    toast.success("Login successful! Redirecting...");
   }, []); 
 
   const logout = useCallback(() => {
@@ -61,12 +57,21 @@ export const AuthProvider = ({ children }) => {
     if (didLogin) {
       // Clear the flag immediately
       setDidLogin(false); 
-      // Execute the navigation command after state has settled
-      navigate('/dashboard'); 
+      
+      // CRITICAL FIX: setTimeout(0) pushes navigation to the end of the event loop.
+      // This ensures the current rendering/cleanup of the Login component is complete
+      // before the navigation command executes.
+      const timer = setTimeout(() => {
+          // Use { replace: true } for cleaner history
+          navigate('/dashboard', { replace: true }); 
+      }, 0);
+
+      // Cleanup function
+      return () => clearTimeout(timer); 
     }
   }, [didLogin, navigate]); 
   
-  // 3. INITIALIZATION EFFECT: Runs only on component mount
+  // 3. INITIALIZATION EFFECT: Runs only on component mount to sync state with localStorage
   useEffect(() => {
     const storedToken = localStorage.getItem('accessToken');
     if (storedToken && storedToken !== accessToken) {
@@ -85,7 +90,8 @@ export const AuthProvider = ({ children }) => {
     username,
     login,
     logout,
-    isAuthenticated: !!accessToken,
+    // Expose authentication status
+    isAuthenticated: !!accessToken, 
   };
 
   return (

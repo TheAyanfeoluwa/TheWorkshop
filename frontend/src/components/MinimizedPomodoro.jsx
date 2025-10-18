@@ -1,6 +1,6 @@
 import { usePomodoro } from '../context/PomodoroContext';
 import { FaPlay, FaPause, FaForward, FaExpand } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 const MinimizedPomodoro = () => {

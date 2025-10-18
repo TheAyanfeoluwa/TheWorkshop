@@ -8,7 +8,7 @@ import { getProgressData } from '../services/progressService';
 import { useAuth } from '../context/AuthContext';
 import { usePomodoro } from '../context/PomodoroContext';
 import { REWARDS } from '../constants/rewardConstants'; 
-
+import { API_BASE_URL } from '../services/progressService';
 
 const StatCard = ({ icon, title, value }) => (
     <motion.div className="bg-[#1A1A1A] p-6 rounded-lg" whileHover={{ scale: 1.01, backgroundColor: '#242424' }} transition={{ duration: 0.2 }}>

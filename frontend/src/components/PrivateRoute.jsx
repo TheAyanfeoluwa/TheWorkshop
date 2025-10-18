@@ -1,6 +1,6 @@
 // frontend/src/components/PrivateRoute.jsx
 import React, { useEffect, useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useAuth } from '../context/AuthContext'; // Assuming you have an AuthContext
 import { API_BASE_URL } from '../services/progressService';
