@@ -4,58 +4,26 @@ import { Navigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useAuth } from '../context/AuthContext'; // Assuming you have an AuthContext
 import { API_BASE_URL } from '../services/progressService';
+
+
+/**
+ * PrivateRoute Component
+ * This version uses a simple, synchronous check of the accessToken.
+ * After a successful login, the presence of the token is enough to allow routing.
+ * The complex asynchronous token verification logic has been removed to prevent 
+ * the race condition that was blocking navigation.
+ */
 const PrivateRoute = ({ children }) => {
-  const { accessToken, logout } = useAuth(); // Get accessToken and logout function from AuthContext
+  // Use the existence of the token as the immediate gate for routing.
+  const { accessToken } = useAuth(); 
 
-  // State to manage loading during token verification
-  const [checkingAuth, setCheckingAuth] = useState(true);
-
-  useEffect(() => {
-    const verifyAccessToken = async () => {
-      if (!accessToken) {
-        // No token, no need to verify, just set checkingAuth to false
-        setCheckingAuth(false);
-        return;
-      }
-
-      try {
-        // Attempt to fetch user data with the token
-        const response = await fetch(`${API_BASE_URL}/api/v1/users/me`, {
-          headers: {
-            'Authorization': `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-          },
-        });
-
-        if (!response.ok) {
-          // If the response is not OK (e.g., 401 Unauthorized, 403 Forbidden)
-          // This means the token is invalid or expired
-          toast.error("Your session has expired or is invalid. Please log in again.");
-          logout(); // Clear the token and state
-        }
-      } catch (error) {
-        console.error("Failed to verify token:", error);
-        toast.error("An error occurred during authentication check. Please log in again.");
-        logout(); // Clear the token and state
-      } finally {
-        setCheckingAuth(false); // Authentication check is complete
-      }
-    };
-
-    verifyAccessToken();
-  }, [accessToken, logout]); // Re-run if accessToken or logout function changes
-
-  if (checkingAuth) {
-    // Show a loading indicator while the token is being verified
-    return <div>Loading authentication...</div>; // Or a spinner component
-  }
-
-  // If after checking, there's no valid accessToken, redirect to login page
+  // If accessToken is missing (null or undefined), redirect to the login page.
   if (!accessToken) {
+    // 'replace' prevents the user from hitting the back button and landing on a protected page.
     return <Navigate to="/login" replace />;
   }
 
-  // If accessToken is present and verified, render the child components (the protected content)
+  // If the accessToken is present, render the protected content immediately.
   return children;
 };
 
