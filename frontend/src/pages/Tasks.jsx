@@ -40,7 +40,7 @@ const Tasks = () => {
     }
 
     try {
-      const response = await fetch('${API_BASE_URL}/api/v1/tasks/', {
+      const response = await fetch(`${API_BASE_URL}/api/v1/tasks/`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (!response.ok) {
@@ -75,7 +75,7 @@ const Tasks = () => {
     };
 
     try {
-      const response = await fetch('${API_BASE_URL}/api/v1/tasks/', {
+      const response = await fetch(`${API_BASE_URL}/api/v1/tasks/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
