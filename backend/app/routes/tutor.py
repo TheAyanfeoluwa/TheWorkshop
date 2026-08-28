@@ -237,6 +237,39 @@ async def serve_document_file(
     from fastapi.responses import RedirectResponse
     return RedirectResponse(url=signed_url)
 
+
+@router.delete("/documents/{document_id}", status_code=204)
+async def delete_document(
+    document_id: str,
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_session)
+):
+    """Delete a document and its associated file from storage."""
+    doc = session.exec(
+        select(TutorDocument).where(
+            TutorDocument.id == document_id,
+            TutorDocument.user_id == current_user.id
+        )
+    ).first()
+    if not doc:
+        raise HTTPException(status_code=404, detail="Document not found.")
+
+    # Delete from Supabase storage if it's a PDF
+    if doc.file_path:
+        try:
+            from supabase import create_client, Client
+            url = os.getenv("SUPABASE_URL")
+            key = os.getenv("SUPABASE_KEY")
+            if url and key:
+                supabase: Client = create_client(url, key)
+                supabase.storage.from_("tutor_documents").remove([doc.file_path])
+        except Exception as e:
+            print(f"Warning: Could not delete file from storage: {e}")
+
+    session.delete(doc)
+    session.commit()
+
+
 @router.post("/chat", response_model=TutorChatResponse)
 async def chat_with_tutor(
     request: TutorChatRequest,
