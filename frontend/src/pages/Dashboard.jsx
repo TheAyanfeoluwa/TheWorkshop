@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Clock, Brain, UserCircle, Camera, X, Crown, BookOpen, Bot, Users, ArrowRight, Play, CheckCircle2 } from 'lucide-react';
+import { Clock, Brain, UserCircle, Camera, X, Crown, BookOpen, Bot, Users, ArrowRight, Play, CheckCircle2, GraduationCap } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -235,9 +235,9 @@ const Dashboard = () => {
                         <h2 className="text-sm font-bold text-slate-400 uppercase tracking-[0.15em] mb-8 ml-2">Learning Arsenal</h2>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                             <QuickLink to="/past-papers" icon={<BookOpen />} title="Past Papers" desc="Access exam papers & memos" />
-                            <QuickLink to="/study-suite" icon={<Bot />} title="Study Suite" desc="All-in-one AI tutor" />
+                            <QuickLink to="/revision-notes" icon={<GraduationCap />} title="Revision Notes" desc="Topic-by-topic subject notes" />
+                            <QuickLink to="/study-suite" icon={<Bot />} title="Study Suite" desc="AI tutor — chat, quiz & flashcards" />
                             <QuickLink to="/community" icon={<Users />} title="Community" desc="Collaborate with peers" />
-                            <QuickLink to="/pomodoro" icon={<Clock />} title="Focus Mode" desc="Distraction-free timer" />
                         </div>
                     </div>
                 </div>

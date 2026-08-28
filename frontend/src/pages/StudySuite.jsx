@@ -2,11 +2,10 @@ import React, { useState, useRef, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import {
     Bot, Send, Upload, Lightbulb, List, FileText, Loader2, X,
-    ArrowLeft, ArrowRight, BookOpen, Trash2, MessageSquare,
-    ChevronDown, ChevronUp, File, CheckCircle, XCircle, RotateCcw,
+    ArrowLeft, ArrowRight, Trash2, MessageSquare,
+    File, CheckCircle, XCircle, RotateCcw,
     Zap, Brain, Sparkles
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { API_BASE_URL } from '../services/progressService';
 import { useAuth } from '../context/AuthContext';
@@ -57,11 +56,6 @@ const StudySuite = () => {
     const [pdfBlobUrl, setPdfBlobUrl] = useState(null);
     const [isLoadingPdf, setIsLoadingPdf] = useState(false);
 
-    // Subject summaries
-    const [subjects, setSubjects] = useState([]);
-    const [isLoadingSubjects, setIsLoadingSubjects] = useState(false);
-    const [subjectsExpanded, setSubjectsExpanded] = useState(false);
-
     // Right panel tabs
     const [activeTab, setActiveTab] = useState('chat');
 
@@ -84,20 +78,11 @@ const StudySuite = () => {
     const [isFlipped, setIsFlipped] = useState(false);
 
     // ── Effects ───────────────────────────────────────────────────────────────
-    useEffect(() => { fetchDocuments(); fetchSubjects(); }, []);
+    useEffect(() => { fetchDocuments(); }, []);
     useEffect(() => { chatEndRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages, isSending]);
     useEffect(() => () => { if (pdfBlobUrl) URL.revokeObjectURL(pdfBlobUrl); }, [pdfBlobUrl]);
 
     // ── Data fetching ─────────────────────────────────────────────────────────
-    const fetchSubjects = async () => {
-        setIsLoadingSubjects(true);
-        try {
-            const res = await fetch(`${API_BASE}/api/v1/subjects`);
-            if (res.ok) setSubjects(await res.json());
-        } catch { /* silent */ }
-        finally { setIsLoadingSubjects(false); }
-    };
-
     const fetchDocuments = async () => {
         if (!token) return;
         try {
@@ -174,8 +159,12 @@ const StudySuite = () => {
                             `${API_BASE}/api/v1/tutor/files/${docId}?token=${encodeURIComponent(token)}`
                         );
                         if (pdfRes.ok) {
-                            const blob = await pdfRes.blob();
-                            setPdfBlobUrl(URL.createObjectURL(blob));
+                            const rawBlob = await pdfRes.blob();
+                            // Force application/pdf MIME type — the redirect chain (backend → Supabase)
+                            // may return application/octet-stream or text/plain, which causes the
+                            // browser to display raw PDF bytes as text instead of rendering the PDF.
+                            const pdfBlob = new Blob([await rawBlob.arrayBuffer()], { type: 'application/pdf' });
+                            setPdfBlobUrl(URL.createObjectURL(pdfBlob));
                         } else {
                             toast.warning('PDF preview unavailable. AI features still work.');
                         }
@@ -360,7 +349,7 @@ const StudySuite = () => {
             <div className="flex flex-col" style={{ marginTop: '64px', height: 'calc(100vh - 64px)' }}>
 
                 {/* ── Top bar ─────────────────────────────────────────────── */}
-                <div className="flex-shrink-0 bg-white border-b border-slate-200 px-4 py-2.5 flex items-center justify-between">
+                <div className="flex-shrink-0 bg-white border-b border-slate-200 px-4 py-2.5 flex items-center">
                     <div className="flex items-center gap-2.5">
                         <div className="p-1.5 bg-primary/10 rounded-lg">
                             <Brain size={18} className="text-primary" />
@@ -370,42 +359,7 @@ const StudySuite = () => {
                             <p className="text-[11px] text-slate-400 mt-0.5">AI-powered document study tool</p>
                         </div>
                     </div>
-                    <button
-                        onClick={() => setSubjectsExpanded(v => !v)}
-                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-slate-500 hover:text-primary hover:bg-primary/5 rounded-lg transition-all border border-transparent hover:border-primary/20"
-                    >
-                        <BookOpen size={13} />
-                        Subject Summaries
-                        {subjectsExpanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
-                    </button>
                 </div>
-
-                {/* ── Subject summaries strip (collapsible) ───────────────── */}
-                {subjectsExpanded && (
-                    <div className="flex-shrink-0 bg-white border-b border-slate-200 px-4 py-2.5">
-                        {isLoadingSubjects ? (
-                            <div className="flex gap-2">
-                                {[...Array(8)].map((_, i) => (
-                                    <div key={i} className="h-7 w-20 rounded-full animate-skeleton" />
-                                ))}
-                            </div>
-                        ) : subjects.length === 0 ? (
-                            <p className="text-xs text-slate-400 italic">No subject summaries available yet.</p>
-                        ) : (
-                            <div className="flex flex-wrap gap-2">
-                                {subjects.map(s => (
-                                    <Link
-                                        key={s.id}
-                                        to={`/subjects/${s.id}`}
-                                        className="px-3 py-1 bg-primary/5 hover:bg-primary/10 text-primary text-xs font-semibold rounded-full transition-all border border-primary/15 hover:border-primary/30"
-                                    >
-                                        {s.name}
-                                    </Link>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                )}
 
                 {/* ── 3-panel area ─────────────────────────────────────────── */}
                 <div className="flex flex-1 overflow-hidden">
@@ -464,28 +418,6 @@ const StudySuite = () => {
                                 </div>
                             )}
                         </div>
-
-                        {/* Generate buttons */}
-                        {selectedDoc && (
-                            <div className="flex-shrink-0 p-3 border-t border-slate-100 space-y-2">
-                                <button
-                                    onClick={handleGenerateQuiz}
-                                    disabled={isGenerating}
-                                    className="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-primary text-white text-xs font-bold rounded-lg hover:bg-primary/90 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-wait"
-                                >
-                                    {isGeneratingQuiz ? <Loader2 size={13} className="animate-spin" /> : <List size={13} />}
-                                    Generate Quiz
-                                </button>
-                                <button
-                                    onClick={handleGenerateFlashcards}
-                                    disabled={isGenerating}
-                                    className="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-accent text-white text-xs font-bold rounded-lg hover:bg-accent/90 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-wait"
-                                >
-                                    {isGeneratingFlashcards ? <Loader2 size={13} className="animate-spin" /> : <Lightbulb size={13} />}
-                                    Generate Flashcards
-                                </button>
-                            </div>
-                        )}
                     </div>
 
                     {/* ── CENTER: Document viewer ───────────────────────── */}

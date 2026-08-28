@@ -335,7 +335,7 @@ async def chat_with_tutor(
         formatted_history.append({"role": role, "parts": text_parts})
 
     try:
-        chat = client.chats.create(model='gemini-2.0-flash', history=formatted_history)
+        chat = client.chats.create(model='gemini-2.5-flash', history=formatted_history)
         response = chat.send_message(context_prompt + f"Question: {request.message}")
 
         # Increment usage counter
@@ -385,7 +385,7 @@ async def generate_quiz(
 
     try:
         response = client.models.generate_content(
-            model='gemini-2.0-flash',
+            model='gemini-2.5-flash',
             contents=prompt,
             config={"response_mime_type": "application/json"}
         )
@@ -434,7 +434,7 @@ async def generate_flashcards(
 
     try:
         response = client.models.generate_content(
-            model='gemini-2.0-flash',
+            model='gemini-2.5-flash',
             contents=prompt,
             config={"response_mime_type": "application/json"}
         )

@@ -25,6 +25,7 @@ import StudySuite from './pages/StudySuite';
 // import Community from './pages/Community'; // Removed: Redundant
 import AdminDashboard from './pages/AdminDashboard'; // Import AdminDashboard
 import SubjectSummary from './pages/SubjectSummary';
+import RevisionNotes from './pages/RevisionNotes';
 import Pricing from './pages/Pricing';
 import Onboarding from './pages/Onboarding';
 import PaperViewer from './pages/PaperViewer';
@@ -144,6 +145,14 @@ const AppContent = () => {
             <AdminRoute>
               <AdminDashboard />
             </AdminRoute>
+          }
+        />
+        <Route
+          path="/revision-notes"
+          element={
+            <PrivateRoute>
+              <RevisionNotes />
+            </PrivateRoute>
           }
         />
         <Route

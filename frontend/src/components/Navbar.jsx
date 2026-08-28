@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Shield, Menu, X, BookOpen, Bot, Clock, Users, Home, User } from 'lucide-react';
+import { Shield, Menu, X, BookOpen, Bot, Clock, Users, Home, User, GraduationCap } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const Navbar = () => {
@@ -57,6 +57,7 @@ const Navbar = () => {
                     </Link>
                   )}
                   <NavLink to="/past-papers" label="Papers" />
+                  <NavLink to="/revision-notes" label="Revision Notes" />
                   <NavLink to="/study-suite" label="Study Suite" />
 
                   <div className="h-6 w-px bg-slate-200 mx-2"></div>
@@ -131,6 +132,7 @@ const Navbar = () => {
                   <div className="space-y-2">
                     <MobileLink to="/dashboard" label="Dashboard" icon={<Home className="w-5 h-5" />} onClick={closeMobile} />
                     <MobileLink to="/past-papers" label="Past Papers" icon={<BookOpen className="w-5 h-5" />} onClick={closeMobile} />
+                    <MobileLink to="/revision-notes" label="Revision Notes" icon={<GraduationCap className="w-5 h-5" />} onClick={closeMobile} />
                     <MobileLink to="/study-suite" label="Study Suite" icon={<Bot className="w-5 h-5" />} onClick={closeMobile} />
                     <MobileLink to="/community" label="Community" icon={<Users className="w-5 h-5" />} onClick={closeMobile} />
                     <MobileLink to="/pomodoro" label="Focus Timer" icon={<Clock className="w-5 h-5" />} onClick={closeMobile} />
