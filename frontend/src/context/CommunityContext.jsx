@@ -113,6 +113,10 @@ export const CommunityProvider = ({ children }) => {
             if (response.ok) {
                 const newCommunity = await response.json();
                 setCommunities(prev => [...prev, newCommunity]);
+                // Bug 7 fix: clear stale channel/message state before switching
+                setChannels([]);
+                setMessages([]);
+                setCurrentChannel(null);
                 setCurrentCommunity(newCommunity);
                 setViewMode('community');
                 return newCommunity;
@@ -166,9 +170,12 @@ export const CommunityProvider = ({ children }) => {
             if (response.ok) {
                 const data = await response.json();
                 setChannels(data);
-                // Only auto-select the first channel if no channel is already selected.
-                // Prevents losing your place whenever the community refreshes.
-                setCurrentChannel(prev => prev ?? (data.length > 0 ? data[0] : null));
+                // Bug 9 fix: compare community_id on the existing channel instead of
+                // blindly using ??, which prevented channel reset on community switch.
+                setCurrentChannel(prev => {
+                    if (prev && prev.community_id === communityId) return prev; // preserve place within same community
+                    return data.length > 0 ? data[0] : null; // reset for a different community
+                });
             }
         } catch (error) {
             console.error("Failed to fetch channels", error);
@@ -449,13 +456,17 @@ export const CommunityProvider = ({ children }) => {
         }
     }, [token]);
 
-    // When community changes, fetch its channels and members
+    // Bug 8 fix: clear stale channels, messages, and selected channel before fetching
+    // so the previous community's data is never shown while the new one loads.
     useEffect(() => {
         if (currentCommunity && token) {
+            setChannels([]);
+            setMessages([]);
+            setCurrentChannel(null);
             fetchChannels(currentCommunity.id);
             fetchMembers(currentCommunity.id);
         }
-    }, [currentCommunity, token]);
+    }, [currentCommunity?.id, token]); // depend on id, not the whole object
 
     // When channel changes, fetch messages and mark as read
     useEffect(() => {

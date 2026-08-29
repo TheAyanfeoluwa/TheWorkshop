@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Clock, Brain, UserCircle, Camera, X, Crown, BookOpen, Bot, Users, ArrowRight, Play, CheckCircle2, GraduationCap } from 'lucide-react';
+import { Clock, Brain, UserCircle, Camera, X, Crown, BookOpen, Bot, Users, ArrowRight, Play, CheckCircle2, GraduationCap, MessageSquare } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -237,7 +237,7 @@ const Dashboard = () => {
                             <QuickLink to="/past-papers" icon={<BookOpen />} title="Past Papers" desc="Access exam papers & memos" />
                             <QuickLink to="/revision-notes" icon={<GraduationCap />} title="Revision Notes" desc="Topic-by-topic subject notes" />
                             <QuickLink to="/study-suite" icon={<Bot />} title="Study Suite" desc="AI tutor — chat, quiz & flashcards" />
-                            <QuickLink to="/community" icon={<Users />} title="Community" desc="Collaborate with peers" />
+                            <QuickLink to="/community" icon={<MessageSquare />} title="Community" desc="Collaborate with peers" />
                         </div>
                     </div>
                 </div>

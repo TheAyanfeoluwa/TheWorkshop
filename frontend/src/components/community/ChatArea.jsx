@@ -376,7 +376,7 @@ const ChatArea = () => {
                                 <div className={`flex flex-col max-w-[70%] ${isOwn ? 'items-end' : 'items-start'}`}>
                                     <div className={`py-3 px-5 text-[15px] leading-relaxed shadow-lg ${
                                         isOwn
-                                            ? 'bg-gradient-to-br from-primary to-primary text-slate-800 rounded-md rounded-br-sm'
+                                            ? 'bg-gradient-to-br from-primary to-primary/90 text-white rounded-md rounded-br-sm'
                                             : 'bg-white text-slate-700 border border-slate-200 rounded-md rounded-bl-sm'
                                     }`}>
                                         {msg.content}
