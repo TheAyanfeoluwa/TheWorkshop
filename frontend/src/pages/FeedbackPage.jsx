@@ -9,12 +9,12 @@ import Footer from '../components/Footer';
 const WEBHOOK_URL = 'https://hook.eu1.make.com/5dakyq4j796vsvukh6957o2wrfgcqf3q';
 
 const CATEGORIES = [
-    { value: 'bug', label: '🐛 Bug Report' },
-    { value: 'feature', label: '✨ Feature Request' },
-    { value: 'ux', label: '🎨 UI / UX Feedback' },
-    { value: 'content', label: '📚 Content Feedback' },
-    { value: 'general', label: '💬 General Feedback' },
-    { value: 'other', label: '🔖 Other' },
+    { value: 'bug', label: 'Bug Report' },
+    { value: 'feature', label: 'Feature Request' },
+    { value: 'ux', label: 'UI / UX Feedback' },
+    { value: 'content', label: 'Content Feedback' },
+    { value: 'general', label: 'General Feedback' },
+    { value: 'other', label: 'Other' },
 ];
 
 const StarRating = ({ value, onChange }) => (
@@ -28,11 +28,10 @@ const StarRating = ({ value, onChange }) => (
             >
                 <Star
                     size={28}
-                    className={`transition-colors ${
-                        n <= value
-                            ? 'fill-amber-400 text-amber-400'
-                            : 'text-slate-300 group-hover:text-amber-300'
-                    }`}
+                    className={`transition-colors ${n <= value
+                        ? 'fill-amber-400 text-amber-400'
+                        : 'text-slate-300 group-hover:text-amber-300'
+                        }`}
                 />
             </button>
         ))}
@@ -93,7 +92,7 @@ const FeedbackPage = () => {
     return (
         <div className="min-h-screen bg-slate-50 text-slate-900 font-sans flex flex-col">
             <Navbar />
-            
+
             <main className="flex-1 flex items-center justify-center px-4 pt-32 pb-24">
                 <div className="w-full max-w-lg">
                     <AnimatePresence mode="wait">
@@ -107,7 +106,7 @@ const FeedbackPage = () => {
                                 <div className="w-20 h-20 bg-emerald-100 border-2 border-emerald-200 rounded-full flex items-center justify-center mx-auto mb-6">
                                     <CheckCircle2 size={40} className="text-emerald-500" />
                                 </div>
-                                <h1 className="text-3xl font-extrabold mb-3 tracking-tight text-slate-900">Thank you! 🎉</h1>
+                                <h1 className="text-3xl font-extrabold mb-3 tracking-tight text-slate-900">Thank you!</h1>
                                 <p className="text-slate-500 leading-relaxed mb-8 max-w-sm mx-auto">
                                     Your feedback has been received. We read every single submission and it helps us make TheWorkshop better for everyone.
                                 </p>
@@ -126,9 +125,6 @@ const FeedbackPage = () => {
                             >
                                 {/* Header */}
                                 <div className="text-center mb-8">
-                                    <div className="w-14 h-14 bg-primary/10 border border-primary/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                                        <MessageSquarePlus size={26} className="text-primary" />
-                                    </div>
                                     <h1 className="text-3xl font-extrabold tracking-tight mb-2 text-slate-900">Beta Feedback</h1>
                                     <p className="text-slate-500 text-sm">
                                         Found a bug? Have an idea? We're all ears.
@@ -249,7 +245,7 @@ const FeedbackPage = () => {
                     </AnimatePresence>
                 </div>
             </main>
-            
+
             <Footer />
         </div>
     );
