@@ -105,7 +105,7 @@ const FeedbackPage = () => {
                             >
                                 <h1 className="text-3xl font-extrabold mb-3 tracking-tight text-slate-900">Thank you!</h1>
                                 <p className="text-slate-500 leading-relaxed mb-8 max-w-sm mx-auto">
-                                    Your feedback has been received. We read every single submission and it helps us make TheWorkshop better for everyone.
+                                    Your feedback has been received. We read every single submission and it helps us make Workshop better for everyone.
                                 </p>
                                 <Link
                                     to={user ? '/dashboard' : '/'}
