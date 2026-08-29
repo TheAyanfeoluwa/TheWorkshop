@@ -103,9 +103,6 @@ const FeedbackPage = () => {
                                 animate={{ opacity: 1, scale: 1 }}
                                 className="text-center bg-white p-12 rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100"
                             >
-                                <div className="w-20 h-20 bg-emerald-100 border-2 border-emerald-200 rounded-full flex items-center justify-center mx-auto mb-6">
-                                    <CheckCircle2 size={40} className="text-emerald-500" />
-                                </div>
                                 <h1 className="text-3xl font-extrabold mb-3 tracking-tight text-slate-900">Thank you!</h1>
                                 <p className="text-slate-500 leading-relaxed mb-8 max-w-sm mx-auto">
                                     Your feedback has been received. We read every single submission and it helps us make TheWorkshop better for everyone.
@@ -132,7 +129,7 @@ const FeedbackPage = () => {
                                 </div>
 
                                 {/* Card */}
-                                <div className="bg-white border border-slate-200 shadow-xl shadow-slate-200/50 rounded-3xl p-8">
+                                <div className="bg-white border border-slate-200 shadow-xl shadow-slate-200/50 rounded-md p-8">
                                     <form onSubmit={handleSubmit} className="space-y-5">
                                         {/* Name + Email */}
                                         <div className="grid grid-cols-2 gap-4">
@@ -238,7 +235,7 @@ const FeedbackPage = () => {
                                 </div>
 
                                 <p className="text-center text-slate-500 text-xs mt-6 font-medium">
-                                    You're a beta tester — your feedback shapes the product. Thank you 🙏
+                                    Your feedback shapes the product. Thank you
                                 </p>
                             </motion.div>
                         )}
