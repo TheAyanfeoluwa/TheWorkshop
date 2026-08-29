@@ -1,14 +1,14 @@
-﻿import React from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useCommunity } from "../context/CommunityContext";
 import ChannelList from "../components/community/ChannelList";
 import ChatArea from "../components/community/ChatArea";
 import MemberSidebar from "../components/community/MemberSidebar";
 import GlobalLoader from "../components/GlobalLoader";
-import { WifiOff, Users2 } from "lucide-react";
+import { WifiOff } from "lucide-react";
 
 const CommunityPage = () => {
-    const { loading, error, isConnected, communities } = useCommunity();
+    const { loading, error, isConnected } = useCommunity();
     const navigate = useNavigate();
 
     if (loading) {
@@ -30,29 +30,6 @@ const CommunityPage = () => {
                         className="px-8 py-3 bg-primary text-white rounded-xl font-semibold hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 active:scale-95"
                     >
                         Return to Dashboard
-                    </button>
-                </div>
-            </div>
-        );
-    }
-
-    // Bug 6 fix: empty state when user has no communities
-    if (communities.length === 0) {
-        return (
-            <div className="h-screen w-screen flex items-center justify-center bg-slate-50 fixed inset-0">
-                <div className="bg-white p-10 rounded-2xl shadow-xl border border-slate-100 max-w-md w-full text-center">
-                    <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-5">
-                        <Users2 size={28} className="text-primary" />
-                    </div>
-                    <h2 className="text-slate-800 font-extrabold text-2xl mb-3 tracking-tight">No Communities Yet</h2>
-                    <p className="text-slate-400 text-sm mb-8 leading-relaxed">
-                        You have not joined or created any communities. Create one to get started, or ask a friend for their join code.
-                    </p>
-                    <button
-                        onClick={() => navigate("/dashboard")}
-                        className="px-8 py-3 bg-slate-900 text-white rounded-xl font-bold hover:bg-slate-800 transition-all shadow-xl shadow-slate-900/20 active:scale-95"
-                    >
-                        Back to Dashboard
                     </button>
                 </div>
             </div>

@@ -8,6 +8,7 @@ import { CommunityProvider } from './context/CommunityContext';
 import MinimizedPomodoro from './components/MinimizedPomodoro';
 import PrivateRoute from './components/PrivateRoute';
 import AdminRoute from './components/AdminRoute';
+import ProfilePictureGate from './components/ProfilePictureGate';
 import Landing from './pages/Landing';
 import Dashboard from './pages/Dashboard';
 import Pomodoro from './pages/Pomodoro';
@@ -22,8 +23,7 @@ import Materials from './pages/Materials';
 import CommunityPage from './pages/CommunityPage';
 import PastPapers from './pages/PastPapers';
 import StudySuite from './pages/StudySuite';
-// import Community from './pages/Community'; // Removed: Redundant
-import AdminDashboard from './pages/AdminDashboard'; // Import AdminDashboard
+import AdminDashboard from './pages/AdminDashboard';
 import SubjectSummary from './pages/SubjectSummary';
 import RevisionNotes from './pages/RevisionNotes';
 import Pricing from './pages/Pricing';
@@ -31,6 +31,7 @@ import Onboarding from './pages/Onboarding';
 import PaperViewer from './pages/PaperViewer';
 import NotFound from './pages/NotFound';
 import About from './pages/About';
+import FeedbackPage from './pages/FeedbackPage';
 
 import ScrollToTop from './components/ScrollToTop';
 import TopProgressBar from './components/TopProgressBar';
@@ -135,7 +136,9 @@ const AppContent = () => {
           path="/community"
           element={
             <PrivateRoute>
-              <CommunityPage />
+              <ProfilePictureGate>
+                <CommunityPage />
+              </ProfilePictureGate>
             </PrivateRoute>
           }
         />
@@ -163,6 +166,8 @@ const AppContent = () => {
             </PrivateRoute>
           }
         />
+
+        <Route path="/feedback" element={<FeedbackPage />} />
 
         {/* Catch-all 404 */}
         <Route path="*" element={<NotFound />} />

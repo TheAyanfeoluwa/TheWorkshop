@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Shield, Menu, X, BookOpen, Bot, Clock, Users, Home, User, GraduationCap } from 'lucide-react';
+import { Shield, Menu, X, BookOpen, Bot, Clock, Users, Home, User, GraduationCap, MessageSquarePlus } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const Navbar = () => {
@@ -59,6 +59,7 @@ const Navbar = () => {
                   <NavLink to="/past-papers" label="Papers" />
                   <NavLink to="/revision-notes" label="Revision Notes" />
                   <NavLink to="/study-suite" label="Study Suite" />
+                  <NavLink to="/feedback" label="Feedback" />
 
                   <div className="h-6 w-px bg-slate-200 mx-2"></div>
 
@@ -136,6 +137,7 @@ const Navbar = () => {
                     <MobileLink to="/study-suite" label="Study Suite" icon={<Bot className="w-5 h-5" />} onClick={closeMobile} />
                     <MobileLink to="/community" label="Community" icon={<Users className="w-5 h-5" />} onClick={closeMobile} />
                     <MobileLink to="/pomodoro" label="Focus Timer" icon={<Clock className="w-5 h-5" />} onClick={closeMobile} />
+                    <MobileLink to="/feedback" label="Feedback" icon={<MessageSquarePlus className="w-5 h-5" />} onClick={closeMobile} />
                     {user?.role === 'admin' && (
                       <MobileLink to="/admin" label="Admin Panel" icon={<Shield className="w-5 h-5" />} onClick={closeMobile} />
                     )}
