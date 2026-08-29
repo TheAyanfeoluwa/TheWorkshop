@@ -33,7 +33,7 @@ const Landing = () => {
             </p>
 
             <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
-              <Link to="/onboarding" className="w-full sm:w-auto px-8 py-3.5 bg-slate-900 text-white text-sm font-bold rounded-md shadow-lg shadow-slate-900/20 hover:bg-slate-800 transition-all hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-2 group">
+              <Link to="/onboarding" className="w-full sm:w-auto px-8 py-3.5 bg-primary text-white text-sm font-bold rounded-md shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-2 group">
                 Start Practicing
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>

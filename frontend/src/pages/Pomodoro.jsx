@@ -184,15 +184,13 @@ const Pomodoro = () => {
         <div className="bg-white p-1.5 rounded-full shadow-sm border border-slate-200 mb-10 flex">
           <button
             onClick={() => setCurrentView('timer')}
-            className={`px-8 py-2.5 rounded-full text-sm font-bold transition-all duration-300 ${currentView === 'timer' ? 'bg-slate-900 text-white shadow-md' : 'text-slate-500 hover:text-slate-800'
-              }`}
+            className={`px-8 py-2.5 rounded-full text-sm font-bold transition-all duration-300 ${currentView === 'timer' ? 'bg-primary text-white shadow-md' : 'text-slate-500 hover:text-slate-800'}`}
           >
             Focus Timer
           </button>
           <button
             onClick={() => setCurrentView('progress')}
-            className={`px-8 py-2.5 rounded-full text-sm font-bold transition-all duration-300 ${currentView === 'progress' ? 'bg-slate-900 text-white shadow-md' : 'text-slate-500 hover:text-slate-800'
-              }`}
+            className={`px-8 py-2.5 rounded-full text-sm font-bold transition-all duration-300 ${currentView === 'progress' ? 'bg-primary text-white shadow-md' : 'text-slate-500 hover:text-slate-800'}`}
           >
             My Progress
           </button>
@@ -221,7 +219,7 @@ const Pomodoro = () => {
                         key={m}
                         onClick={() => handleModeChange(m)}
                         className={`px-4 py-2 rounded-md text-xs sm:text-sm font-bold transition-all ${mode === m
-                          ? `bg-slate-900 text-white shadow-lg`
+                          ? `bg-primary text-white shadow-lg`
                           : 'bg-slate-50 text-slate-500 hover:bg-slate-100'
                           }`}
                       >

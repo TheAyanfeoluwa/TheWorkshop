@@ -240,7 +240,7 @@ const Onboarding = () => {
                                         })}
 
                                         <div className="pt-4">
-                                            <button type="submit" className="w-full py-3.5 bg-slate-900 text-white rounded-md font-bold hover:bg-slate-800 transition-colors flex items-center justify-center gap-2 active:scale-95">
+                                            <button type="submit" className="w-full py-3.5 bg-primary text-white rounded-md font-bold hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 active:scale-95">
                                                 Continue <ArrowRight size={18} />
                                             </button>
                                         </div>
@@ -260,7 +260,7 @@ const Onboarding = () => {
                                         <InputField label="Confirm Password" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="Repeat your password" required />
 
                                         <div className="pt-2 space-y-3">
-                                            <button type="submit" disabled={loading} className="w-full py-3.5 bg-slate-900 text-white rounded-md font-bold hover:bg-slate-800 transition-colors flex items-center justify-center gap-2 disabled:opacity-60 active:scale-95">
+                                            <button type="submit" disabled={loading} className="w-full py-3.5 bg-primary text-white rounded-md font-bold hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 disabled:opacity-60 active:scale-95">
                                                 {loading ? <Loader2 size={18} className="animate-spin" /> : 'Create Account'}
                                             </button>
                                             <button type="button" onClick={() => setStep(1)} className="w-full py-3 text-slate-500 text-sm font-semibold hover:text-slate-900 transition-colors flex items-center justify-center gap-1.5">

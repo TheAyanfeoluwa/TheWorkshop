@@ -119,11 +119,11 @@ const Dashboard = () => {
 
     if (error) return (
         <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
-            <div className="bg-white p-12 rounded-[24px] shadow-lg max-w-md w-full text-center">
+            <div className="bg-white p-12 rounded-md shadow-lg max-w-md w-full text-center">
                 <div className="text-red-500 text-5xl mb-6 flex justify-center"><X /></div>
                 <h2 className="text-2xl font-bold text-slate-800 mb-3">Connection Lost</h2>
                 <p className="text-slate-500 mb-8">{error}</p>
-                <button onClick={() => window.location.reload()} className="px-8 py-3 bg-slate-900 text-white rounded-md hover:bg-slate-800 transition-colors font-bold">
+                <button onClick={() => window.location.reload()} className="px-8 py-3 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors font-bold">
                     Retry Connection
                 </button>
             </div>
@@ -147,7 +147,7 @@ const Dashboard = () => {
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-8 max-w-7xl mx-auto">
                     
                     {/* HERO TILE (Spans 8 columns) */}
-                    <div className="md:col-span-8 bg-white rounded-[32px] p-10 md:p-14 shadow-sm border border-slate-100/50 relative overflow-hidden flex flex-col justify-center card hover:shadow-md">
+                    <div className="md:col-span-8 bg-white rounded-md p-10 md:p-14 shadow-sm border border-slate-100/50 relative overflow-hidden flex flex-col justify-center card hover:shadow-md">
                         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-br from-primary/5 to-accent/5 rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none" />
                         
                         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-10 relative z-10">
@@ -183,7 +183,7 @@ const Dashboard = () => {
                                 <div>
                                     <button
                                         onClick={() => setIsSettingsOpen(true)}
-                                        className="px-8 py-4 bg-slate-900 text-white font-bold rounded-md hover:bg-slate-800 transition-all shadow-xl shadow-slate-900/20 active:scale-95"
+                                        className="px-8 py-4 bg-primary text-white font-bold rounded-md hover:bg-primary/90 transition-all shadow-xl shadow-primary/20 active:scale-95"
                                     >
                                         Edit Profile
                                     </button>
@@ -193,7 +193,7 @@ const Dashboard = () => {
                     </div>
 
                     {/* FOCUS TILE (Spans 4 columns) */}
-                    <div className="md:col-span-4 bg-primary rounded-[32px] p-10 text-white shadow-xl shadow-primary/20 relative overflow-hidden flex flex-col card hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/30">
+                    <div className="md:col-span-4 bg-primary rounded-md p-10 text-white shadow-xl shadow-primary/20 relative overflow-hidden flex flex-col card hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/30">
                         <div className="absolute -right-8 -top-8 w-64 h-64 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
                         <div className="flex items-center gap-4 mb-10 opacity-80">
                             <Clock className="w-6 h-6" />
@@ -210,7 +210,7 @@ const Dashboard = () => {
                     </div>
 
                     {/* STATS ROW (Spans 12 columns, split into 2 blocks) */}
-                    <div className="md:col-span-6 bg-white p-8 rounded-[32px] shadow-sm border border-slate-100/50 flex items-center gap-6 card hover:shadow-md">
+                    <div className="md:col-span-6 bg-white p-8 rounded-md shadow-sm border border-slate-100/50 flex items-center gap-6 card hover:shadow-md">
                         <div className="w-20 h-20 rounded-md bg-primary/10 text-primary flex items-center justify-center shrink-0">
                             <Crown className="w-10 h-10" />
                         </div>
@@ -220,7 +220,7 @@ const Dashboard = () => {
                         </div>
                     </div>
 
-                    <div className="md:col-span-6 bg-white p-8 rounded-[32px] shadow-sm border border-slate-100/50 flex items-center gap-6 card hover:shadow-md">
+                    <div className="md:col-span-6 bg-white p-8 rounded-md shadow-sm border border-slate-100/50 flex items-center gap-6 card hover:shadow-md">
                         <div className="w-20 h-20 rounded-md bg-accent/10 text-accent flex items-center justify-center shrink-0">
                             <Brain className="w-10 h-10" />
                         </div>
@@ -257,7 +257,7 @@ const Dashboard = () => {
                                 initial={{ scale: 0.95, opacity: 0, y: 20 }}
                                 animate={{ scale: 1, opacity: 1, y: 0 }}
                                 exit={{ scale: 0.95, opacity: 0, y: 20 }}
-                                className="bg-white rounded-[32px] w-full max-w-2xl shadow-2xl relative z-10 overflow-hidden flex flex-col max-h-[90vh]"
+                                className="bg-white rounded-md w-full max-w-2xl shadow-2xl relative z-10 overflow-hidden flex flex-col max-h-[90vh]"
                             >
                                 <div className="p-8 border-b border-slate-100 flex justify-between items-center bg-white">
                                     <h3 className="text-2xl font-extrabold text-slate-800 tracking-tight">Profile Settings</h3>
@@ -270,7 +270,7 @@ const Dashboard = () => {
                                     {/* Profile Picture Section */}
                                     <section className="mb-12">
                                         <h4 className="text-xs font-bold text-slate-400 uppercase tracking-[0.15em] mb-6">Avatar</h4>
-                                        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-8 bg-white p-8 rounded-[24px] shadow-sm border border-slate-100">
+                                        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-8 bg-white p-8 rounded-md shadow-sm border border-slate-100">
                                             <div className="relative shrink-0">
                                                 <div className="w-28 h-28 rounded-full bg-slate-100 overflow-hidden flex items-center justify-center border-4 border-white shadow-lg">
                                                     {selectedProfilePic ? (
@@ -316,7 +316,7 @@ const Dashboard = () => {
                                                 <button
                                                     key={title.id}
                                                     onClick={() => handleTitleChange(title)}
-                                                    className={`p-6 rounded-[20px] text-left transition-all relative overflow-hidden card border-2 ${selectedTitle.id === title.id ? 'border-primary bg-primary/5 shadow-md' : 'border-transparent bg-white shadow-sm hover:shadow-md hover:-translate-y-1'}`}
+                                                    className={`p-6 rounded-md text-left transition-all relative overflow-hidden card border-2 ${selectedTitle.id === title.id ? 'border-primary bg-primary/5 shadow-md' : 'border-transparent bg-white shadow-sm hover:shadow-md hover:-translate-y-1'}`}
                                                 >
                                                     <div className="font-extrabold text-slate-800 tracking-tight text-lg mb-1">{title.name}</div>
                                                     <div className="text-xs font-medium text-slate-500">Requires {title.requirement} sessions</div>
@@ -334,7 +334,7 @@ const Dashboard = () => {
                                                 <button
                                                     key={frame.id}
                                                     onClick={() => handleFrameChange(frame)}
-                                                    className={`p-6 rounded-[24px] flex flex-col items-center justify-center transition-all card border-2 ${selectedFrame.id === frame.id ? 'border-primary bg-primary/5 shadow-md' : 'border-transparent bg-white shadow-sm hover:shadow-md hover:-translate-y-1'}`}
+                                                    className={`p-6 rounded-md flex flex-col items-center justify-center transition-all card border-2 ${selectedFrame.id === frame.id ? 'border-primary bg-primary/5 shadow-md' : 'border-transparent bg-white shadow-sm hover:shadow-md hover:-translate-y-1'}`}
                                                 >
                                                     <div className="relative w-20 h-20 mb-4">
                                                         <div className="absolute inset-3 bg-slate-100 rounded-full" />
@@ -368,7 +368,7 @@ const Dashboard = () => {
 
 const QuickLink = ({ to, icon, title, desc }) => (
     <Link to={to} className="group block">
-        <div className="bg-white p-8 rounded-[24px] shadow-sm border border-slate-100/50 card hover:shadow-xl hover:shadow-slate-200/50 hover:-translate-y-1 h-full flex flex-col">
+        <div className="bg-white p-8 rounded-md shadow-sm border border-slate-100/50 card hover:shadow-xl hover:shadow-slate-200/50 hover:-translate-y-1 h-full flex flex-col">
             <div className="w-14 h-14 bg-slate-50 text-slate-400 rounded-md flex items-center justify-center mb-8 group-hover:bg-primary group-hover:text-white transition-colors duration-300">
                 {icon}
             </div>

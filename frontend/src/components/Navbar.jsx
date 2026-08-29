@@ -81,7 +81,7 @@ const Navbar = () => {
                   <NavLink to="/login" label="Log In" />
                   <Link
                     to="/onboarding"
-                    className="ml-4 px-8 py-3 bg-slate-900 text-white text-sm font-bold rounded-md shadow-lg shadow-slate-900/20 hover:bg-slate-800 hover:-translate-y-0.5 active:scale-95 transition-all"
+                    className="ml-4 px-8 py-3 bg-primary text-white text-sm font-bold rounded-md shadow-lg shadow-primary/20 hover:bg-primary/90 hover:-translate-y-0.5 active:scale-95 transition-all"
                   >
                     Get Started
                   </Link>
