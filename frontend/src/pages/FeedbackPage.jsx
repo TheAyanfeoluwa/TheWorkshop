@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
@@ -71,8 +71,6 @@ const FeedbackPage = () => {
         const payload = {
             ...form,
             submitted_at: new Date().toISOString(),
-            app: 'TheWorkshop',
-            user_id: user?.id ?? null,
         };
 
         try {
